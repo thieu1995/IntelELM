@@ -249,7 +249,18 @@ data.split_train_test(test_size=0.2, random_state=10)  # Try different random_st
 
 Please include these citations if you plan to use this library:
 
-```code 
+```code
+
+@software{nguyen_van_thieu_2023_8249046,
+  author       = {Nguyen Van Thieu},
+  title        = {Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library},
+  month        = aug,
+  year         = 2023,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.8249045},
+  url          = {https://github.com/thieu1995/IntelELM}
+}
+
 @article{van2023mealpy,
   title={MEALPY: An open-source library for latest meta-heuristic algorithms in Python},
   author={Van Thieu, Nguyen and Mirjalili, Seyedali},

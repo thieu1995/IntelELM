@@ -1,7 +1,6 @@
 run_classification.py
 run_regression.py
 ChangeLog.md
-CITATION.cff
 docs/
 
 examples/wrapper/history/
