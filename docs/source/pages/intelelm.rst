@@ -1,6 +1,9 @@
 IntelELM Library
 ================
 
+intelelm.intelelm module
+------------------------
+
 .. automodule:: intelelm.intelelm
    :members:
    :undoc-members:
