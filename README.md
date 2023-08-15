@@ -232,7 +232,6 @@ data.split_train_test(test_size=0.2, random_state=10)  # Try different random_st
 * Download releases: https://pypi.org/project/intelelm/
 * Issue tracker: https://github.com/thieu1995/intelelm/issues
 * Notable changes log: https://github.com/thieu1995/intelelm/blob/master/ChangeLog.md
-* Examples with different mealpy version: https://github.com/thieu1995/intelelm/blob/master/examples.md
 * Official chat group: https://t.me/+fRVCJGuGJg1mNDg1
 
 * This project also related to our another projects which are "optimization" and "machine learning", check it here:
@@ -250,7 +249,6 @@ data.split_train_test(test_size=0.2, random_state=10)  # Try different random_st
 Please include these citations if you plan to use this library:
 
 ```code
-
 @software{nguyen_van_thieu_2023_8249046,
   author       = {Nguyen Van Thieu},
   title        = {Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library},
