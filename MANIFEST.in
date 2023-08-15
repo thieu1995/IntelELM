@@ -1,0 +1,3 @@
+include README.md LICENSE CODE_OF_CONDUCT.md ChangeLog.md examples.md
+include intelelm/data/reg/*.csv
+include intelelm/data/cls/*.csv
