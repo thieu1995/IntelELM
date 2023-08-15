@@ -181,6 +181,7 @@ class BaseMhaElm(BaseElm):
         self.optimizer_paras = optimizer_paras
         self.optimizer = self._set_optimizer(optimizer, optimizer_paras)
         self.network, self.obj_scaler = None, None
+        self.obj_weights = None
 
     def _set_optimizer(self, optimizer=None, optimizer_paras=None):
         if type(optimizer) is str:
@@ -236,6 +237,7 @@ class BaseMhaElm(BaseElm):
             "minmax": minmax,
             "log_to": log_to,
             "save_population": False,
+            "obj_weights": self.obj_weights
         }
         self.solution, self.best_fit = self.optimizer.solve(problem)
         self.loss_train = self._get_history_loss(optimizer=self.optimizer)
@@ -306,17 +308,35 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
     >>> print(pred)
     """
 
-    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, pathsave="history", verbose=True):
+    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None,
+                 pathsave="history", verbose=True, obj_weights=None):
         super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name, optimizer=optimizer,
                             optimizer_paras=optimizer_paras, pathsave=pathsave, verbose=verbose)
+        self.obj_weights = obj_weights
+
+    def _check_y(self, y):
+        if type(y) in (list, tuple, np.ndarray):
+            y = np.squeeze(np.asarray(y))
+            if y.ndim == 1:
+                return y, 1
+            elif y.ndim == 2:
+                return y, y.shape[1]
+            else:
+                raise TypeError("Invalid y array shape, it should be 1D vector or 2D matrix.")
+        raise TypeError("Invalid y array type, it should be list, tuple or np.ndarray")
 
     def _create_network(self, X, y):
-        dim = 1
-        if y.ndim > 1:
-            y = np.squeeze(y)
-            dim = y.ndim
+        y, size_output = self._check_y(y)
+        if size_output > 1:
+            if self.obj_weights is None:
+                self.obj_weights = 1./size_output * np.ones(size_output)
+            elif self.obj_weights in (list, tuple, np.ndarray):
+                if not (len(self.obj_weights) == size_output):
+                    raise ValueError(f"There is {size_output} objectives, but obj_weights has size of {len(self.obj_weights)}")
+            else:
+                raise TypeError("Invalid obj_weights array type, it should be list, tuple or np.ndarray")
         obj_scaler = ObjectiveScaler(obj_name="self", ohe_scaler=None)
-        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=dim, act_name=self.act_name)
+        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=size_output, act_name=self.act_name)
         return network, obj_scaler
 
     def fitness_function(self, solution=None):
