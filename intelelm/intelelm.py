@@ -7,7 +7,7 @@
 import numpy as np
 from permetrics import RegressionMetric, ClassificationMetric
 from sklearn.preprocessing import OneHotEncoder
-from intelelm.utils import activation
+from intelelm.utils import activation, validator
 from intelelm.utils.encoder import ObjectiveScaler
 from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from mealpy import get_optimizer_by_name, Optimizer, get_all_optimizers
@@ -126,6 +126,12 @@ class BaseElm(BaseEstimator):
         self.verbose = verbose
         self.weights = {}
         self.loss_train = None
+
+    def check_method(self, method=None, list_supported_metrics=None):
+        if type(method) is str:
+            return validator.check_str("method", method, list_supported_metrics)
+        else:
+            raise ValueError(f"method should be a string and belongs to {list_supported_metrics}")
 
     def fit(self, X, y):
         pass
@@ -367,6 +373,7 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         result : float
             The result of selected metric
         """
+        method = self.check_method(method, self.SUPPORTED_REG_OBJECTIVES)
         y_pred = self.network.predict(X)
         return RegressionMetric(y, y_pred, decimal=6).get_metric_by_name(method)[method]
 
@@ -484,5 +491,10 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         result : float
             The result of selected metric
         """
-        y_pred = self.predict(self.X_temp, return_prob=self.return_prob)
+        method = self.check_method(method, self.SUPPORTED_CLS_OBJECTIVES)
+        return_prob = False
+        if self.n_labels > 2:
+            if method in self.OBJ_LOSSES:
+                return_prob = True
+        y_pred = self.predict(X, return_prob=return_prob)
         return ClassificationMetric(y, y_pred, decimal=6).get_metric_by_name(self.obj_name)[self.obj_name]
