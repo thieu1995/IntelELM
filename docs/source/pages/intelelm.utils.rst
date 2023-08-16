@@ -1,5 +1,3 @@
-intelelm.utils package
-======================
 
 intelelm.utils.activation module
 --------------------------------

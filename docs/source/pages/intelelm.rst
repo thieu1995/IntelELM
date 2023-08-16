@@ -10,6 +10,9 @@ intelelm.intelelm module
    :show-inheritance:
 
 
+intelelm.utils package
+----------------------
+
 .. toctree::
    :maxdepth: 4
 
