@@ -51,3 +51,5 @@ print(model.score(data.X_test, data.y_test, method="MSE"))
 print(model.score(data.X_test, data.y_test, method="MAPE"))
 print(model.score(data.X_test, data.y_test, method="R2"))
 print(model.score(data.X_test, data.y_test, method="NSE"))
+
+print(model.scores(data.X_test, data.y_test, list_methods=["MSE", "MAPE", "R2", "KGE", "NSE"]))

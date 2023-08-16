@@ -139,6 +139,12 @@ class BaseElm(BaseEstimator):
     def predict(self, X):
         pass
 
+    def score(self, X, y, method="RMSE"):
+        pass
+
+    def scores(self, X, y, list_methods=("RMSE", "MSE")):
+        pass
+
 
 class BaseMhaElm(BaseElm):
     """
@@ -374,9 +380,32 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         result : float
             The result of selected metric
         """
-        method = self.check_method(method, self.SUPPORTED_REG_OBJECTIVES)
+        method = self.check_method(method, list(self.SUPPORTED_REG_OBJECTIVES.keys()))
         y_pred = self.network.predict(X)
         return RegressionMetric(y, y_pred, decimal=6).get_metric_by_name(method)[method]
+
+    def scores(self, X, y, list_methods=("MSE", "MAE")):
+        """Return the list of metrics of the prediction.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Test samples. For some estimators this may be a precomputed kernel matrix or a list of generic objects instead with shape
+            ``(n_samples, n_samples_fitted)``, where ``n_samples_fitted`` is the number of samples used in the fitting for the estimator.
+
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True values for `X`.
+
+        list_methods : list<str>, default=("MSE", "MAE")
+            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        results : dict<float>
+            The results of the list metrics
+        """
+        y_pred = self.network.predict(X)
+        return RegressionMetric(y, y_pred, decimal=6).get_metric_by_name(list_methods)
 
 
 class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
@@ -492,10 +521,47 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         result : float
             The result of selected metric
         """
-        method = self.check_method(method, self.SUPPORTED_CLS_OBJECTIVES)
+        method = self.check_method(method, list(self.SUPPORTED_CLS_OBJECTIVES.keys()))
         return_prob = False
         if self.n_labels > 2:
             if method in self.OBJ_LOSSES:
                 return_prob = True
         y_pred = self.predict(X, return_prob=return_prob)
         return ClassificationMetric(y, y_pred, decimal=6).get_metric_by_name(self.obj_name)[self.obj_name]
+
+    def scores(self, X, y, list_methods=("AS", "RS")):
+        """
+        Return the list of metrics on the given test data and labels.
+
+        In multi-label classification, this is the subset accuracy which is a harsh metric
+        since you require for each sample that each label set be correctly predicted.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Test samples.
+
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True labels for `X`.
+
+        list_methods : list<str>, default=("AS", "RS")
+            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        results : dict<float>
+            The results of the list metrics
+        """
+        list_errors = list(set(list_methods) & set(self.OBJ_LOSSES))
+        list_scores = list((set(self.SUPPORTED_CLS_OBJECTIVES.keys()) - set(self.OBJ_LOSSES)) & set(list_methods))
+        t1 = {}
+        if len(list_errors) > 0:
+            if self.n_labels > 2:
+                return_prob = True
+                y_pred = self.predict(X, return_prob=return_prob)
+                cm = ClassificationMetric(y, y_pred, decimal=6)
+                t1 = cm.get_metrics_by_list_names(list_errors)
+        y_pred = self.predict(X, return_prob=False)
+        cm = ClassificationMetric(y, y_pred, decimal=6)
+        t2 = cm.get_metrics_by_list_names(list_scores)
+        return {**t2, **t1}
