@@ -9,6 +9,8 @@ intelelm.intelelm module
    :undoc-members:
    :show-inheritance:
 
+.. toctree::
+   :maxdepth: 4
 
 intelelm.utils package
 ----------------------
@@ -17,3 +19,9 @@ intelelm.utils package
    :maxdepth: 4
 
    intelelm.utils
+
+.. toctree::
+   :maxdepth: 4
+
+.. toctree::
+   :maxdepth: 4
