@@ -65,7 +65,7 @@ class ELM:
         self : object
             Returns a trained ELM model.
         """
-        H = self.act_func(X @ self.weights["w1"] + self.weights["b"])
+        H = self.act_func(np.dot(X, self.weights["w1"]) + self.weights["b"])
         self.weights["w2"] = np.linalg.pinv(H) @ y
         return self
 
@@ -82,8 +82,8 @@ class ELM:
         y : ndarray of shape (n_samples, n_outputs)
             The predicted values.
         """
-        H = self.act_func(X @ self.weights["w1"] + self.weights["b"])
-        y_pred = H @ self.weights["w2"]
+        H = self.act_func(np.dot(X, self.weights["w1"]) + self.weights["b"])
+        y_pred = np.dot(H, self.weights["w2"])
         return y_pred
 
     def get_weights(self):
@@ -97,10 +97,10 @@ class ELM:
 
     def update_weights_from_solution(self, solution, X, y):
         w1 = np.reshape(solution[:self.size_w1], (self.input_nodes, self.hidden_nodes))
-        b = np.reshape(solution[self.size_w1:self.size_w1 + self.size_b], (-1, self.hidden_nodes))
-        H = self.act_func(X @ self.weights["w1"] + self.weights["b"])
-        w2 = np.linalg.pinv(H) @ y
-        self.weights = {"w1": w1, "b": b, "w2": w2}
+        b = np.reshape(solution[self.size_w1:self.size_w1 + self.size_b], self.hidden_nodes)
+        H = self.act_func(np.dot(X, w1) + b)
+        w2 = np.dot(np.linalg.pinv(H), y)
+        self.set_weights({"w1": w1, "b": b, "w2": w2})
 
 
 class BaseElm(BaseEstimator):
@@ -239,6 +239,7 @@ class BaseMhaElm(BaseElm):
             "obj_weights": self.obj_weights
         }
         self.solution, self.best_fit = self.optimizer.solve(problem)
+        self.network.update_weights_from_solution(self.solution, self.X_temp, self.y_temp)
         self.loss_train = self._get_history_loss(optimizer=self.optimizer)
         return self
 

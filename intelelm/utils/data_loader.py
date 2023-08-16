@@ -29,7 +29,7 @@ class Data:
         "scaler": ["StandardScaler", "MinMaxScaler", "MaxAbsScaler", "RobustScaler", "Normalizer"]
     }
 
-    def __init__(self, X, y, name="Unknown"):
+    def __init__(self, X=None, y=None, name="Unknown"):
         self.X = X
         self.y = y
         self.name = name
@@ -79,6 +79,7 @@ class Data:
         self.y_train = y_train
         self.X_test = X_test
         self.y_test = y_test
+        return self
 
 
 def get_dataset(dataset_name):
