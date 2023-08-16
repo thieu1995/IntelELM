@@ -31,7 +31,7 @@ class ELM:
         The number of output nodes
 
     act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish, "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
         Activation function for the hidden layer.
     """
     def __init__(self, size_input=5, size_hidden=10, size_output=1, act_name='sigmoid'):
@@ -113,7 +113,7 @@ class BaseElm(BaseEstimator):
         The number of hidden nodes
 
     act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish, "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
         Activation function for the hidden layer.
 
     verbose : bool, default=True
@@ -148,7 +148,7 @@ class BaseMhaElm(BaseElm):
         The number of hidden nodes
 
     act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish, "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
         Activation function for the hidden layer.
 
     obj_name : None or str, default=None
@@ -249,7 +249,9 @@ class BaseMhaElm(BaseElm):
 
         Parameters
         ----------
-        X :
+        X : {array-like, sparse matrix} of shape (n_samples, n_features)
+            The input data.
+
         return_prob : bool, default=False
             It is used for classification problem:
 
@@ -272,7 +274,7 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         The number of hidden nodes
 
     act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish, "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
         Activation function for the hidden layer.
 
     obj_name : None or str, default=None
@@ -354,8 +356,31 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         """
         self.network.update_weights_from_solution(solution, self.X_temp, self.y_temp)
         y_pred = self.network.predict(self.X_temp)
-        loss_train = RegressionMetric(self.y_temp, y_pred, decimal=8).get_metric_by_name(self.obj_name)[self.obj_name]
+        loss_train = RegressionMetric(self.y_temp, y_pred, decimal=6).get_metric_by_name(self.obj_name)[self.obj_name]
         return loss_train
+
+    def score(self, X, y, method="RMSE"):
+        """Return the metric of the prediction.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Test samples. For some estimators this may be a precomputed kernel matrix or a list of generic objects instead with shape
+            ``(n_samples, n_samples_fitted)``, where ``n_samples_fitted`` is the number of samples used in the fitting for the estimator.
+
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True values for `X`.
+
+        method : str, default="RMSE"
+            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        result : float
+            The result of selected metric
+        """
+        y_pred = self.network.predict(X)
+        return RegressionMetric(y, y_pred, decimal=6).get_metric_by_name(method)[method]
 
 
 class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
@@ -368,7 +393,7 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         The number of hidden nodes
 
     act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish, "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
         Activation function for the hidden layer.
 
     obj_name : None or str, default=None
@@ -449,5 +474,31 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         self.network.update_weights_from_solution(solution, self.X_temp, self.y_temp)
         y_pred = self.predict(self.X_temp, return_prob=self.return_prob)
         y1 = self.obj_scaler.inverse_transform(self.y_temp)
-        loss_train = ClassificationMetric(y1, y_pred, decimal=8).get_metric_by_name(self.obj_name)[self.obj_name]
+        loss_train = ClassificationMetric(y1, y_pred, decimal=6).get_metric_by_name(self.obj_name)[self.obj_name]
         return loss_train
+
+    def score(self, X, y, method="AS"):
+        """
+        Return the metric on the given test data and labels.
+
+        In multi-label classification, this is the subset accuracy which is a harsh metric
+        since you require for each sample that each label set be correctly predicted.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Test samples.
+
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True labels for `X`.
+
+        method : str, default="AS"
+            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        result : float
+            The result of selected metric
+        """
+        y_pred = self.predict(self.X_temp, return_prob=self.return_prob)
+        return ClassificationMetric(y, y_pred, decimal=6).get_metric_by_name(self.obj_name)[self.obj_name]
