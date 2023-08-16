@@ -38,6 +38,11 @@ class Data:
     @staticmethod
     def scale(X, method="MinMaxScaler", **kwargs):
         if method in Data.SUPPORT["scaler"]:
+            X = np.squeeze(np.asarray(X))
+            if X.ndim == 1:
+                X = np.reshape(X, (-1, 1))
+            if X.ndim > 3:
+                raise TypeError(f"Invalid X data type. It should be array-like with shape (n samples, m features)")
             scaler = getattr(preprocessing, method)(**kwargs)
             data = scaler.fit_transform(X)
             return data, scaler
