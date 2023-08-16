@@ -4,16 +4,28 @@
 #       Github: https://github.com/thieu1995        %                         
 # --------------------------------------------------%
 
+import numpy as np
 from intelelm import get_dataset, MhaElmRegressor
 
-data = get_dataset("gauss-50-12")
+
+data = get_dataset("diabetes")
 data.split_train_test(test_size=0.2, random_state=2)
 print(data.X_train.shape, data.X_test.shape)
 
+data.X_train, scaler_X = data.scale(data.X_train, method="MinMaxScaler", feature_range=(0, 1))
+data.X_test = scaler_X.transform(data.X_test)
 
-opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras)
+data.y_train, scaler_y = data.scale(data.y_train, method="MinMaxScaler", feature_range=(0, 1))
+data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
+
+opt_paras = {"name": "GA", "epoch": 1000, "pop_size": 30}
+model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="NNSE", optimizer="BaseGA", optimizer_paras=opt_paras)
 model.fit(data.X_train, data.y_train)
 
 pred = model.predict(data.X_test)
 print(pred)
+
+print(model.score(data.X_test, data.y_test, method="RMSE"))
+print(model.score(data.X_test, data.y_test, method="MAPE"))
+print(model.score(data.X_test, data.y_test, method="R2"))
+print(model.score(data.X_test, data.y_test, method="NSE"))

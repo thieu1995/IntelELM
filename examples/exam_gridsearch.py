@@ -6,15 +6,10 @@
 
 import pandas as pd
 import numpy as np
-from sklearn.svm import SVR, SVC
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from permetrics import ClassificationMetric
 from intelelm import MhaElmClassifier
-
-model = SVR()
-model = SVC()
-model.score(X, y, weights)
 
 #### Load dataset
 cancer = load_breast_cancer()
