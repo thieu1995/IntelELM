@@ -118,15 +118,11 @@ class BaseElm(BaseEstimator):
 
     verbose : bool, default=True
         Whether to print progress messages to stdout.
-
-    pathsave : str, default="history"
-        The folder to save the results
     """
-    def __init__(self, hidden_size=10, act_name="elu", pathsave="history", verbose=True):
+    def __init__(self, hidden_size=10, act_name="elu", verbose=True):
         super().__init__()
         self.hidden_size = hidden_size
         self.act_name = act_name
-        self.pathsave = pathsave
         self.verbose = verbose
         self.weights = {}
         self.loss_train = None
@@ -164,9 +160,6 @@ class BaseMhaElm(BaseElm):
         If `None`, the default parameters of optimizer is used (defined in https://github.com/thieu1995/mealpy.)
         If `dict` is passed, make sure it has at least `epoch` and `pop_size` parameters.
 
-    pathsave : str, default="history"
-        The folder to save the results
-
     verbose : bool, default=True
         Whether to print progress messages to stdout.
     """
@@ -175,8 +168,8 @@ class BaseMhaElm(BaseElm):
     SUPPORTED_CLS_OBJECTIVES = get_all_classification_metrics()
     SUPPORTED_REG_OBJECTIVES = get_all_regression_metrics()
 
-    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, pathsave="history", verbose=True):
-        super().__init__(hidden_size=hidden_size, act_name=act_name, pathsave=pathsave, verbose=verbose)
+    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=True):
+        super().__init__(hidden_size=hidden_size, act_name=act_name, verbose=verbose)
         self.obj_name = obj_name
         self.optimizer_paras = optimizer_paras
         self.optimizer = self._set_optimizer(optimizer, optimizer_paras)
@@ -290,9 +283,6 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         If `None`, the default parameters of optimizer is used (defined in https://github.com/thieu1995/mealpy.)
         If `dict` is passed, make sure it has at least `epoch` and `pop_size` parameters.
 
-    pathsave : str, default="history"
-        The folder to save the results
-
     verbose : bool, default=True
         Whether to print progress messages to stdout.
 
@@ -310,10 +300,8 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
     >>> print(pred)
     """
 
-    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None,
-                 pathsave="history", verbose=True, obj_weights=None):
-        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name, optimizer=optimizer,
-                            optimizer_paras=optimizer_paras, pathsave=pathsave, verbose=verbose)
+    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=True, obj_weights=None):
+        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name, optimizer=optimizer, optimizer_paras=optimizer_paras, verbose=verbose)
         self.obj_weights = obj_weights
 
     def _check_y(self, y):
@@ -409,9 +397,6 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         If `None`, the default parameters of optimizer is used (defined in https://github.com/thieu1995/mealpy.)
         If `dict` is passed, make sure it has at least `epoch` and `pop_size` parameters.
 
-    pathsave : str, default="history"
-        The folder to save the results
-
     verbose : bool, default=True
         Whether to print progress messages to stdout.
 
@@ -434,9 +419,8 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
 
     OBJ_LOSSES = ["CEL", "HL", "KLDL", "BSL"]
 
-    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, pathsave="history", verbose=True):
-        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name, optimizer=optimizer,
-                         optimizer_paras=optimizer_paras, pathsave=pathsave, verbose=verbose)
+    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=True):
+        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name, optimizer=optimizer, optimizer_paras=optimizer_paras, verbose=verbose)
         self.return_prob = False
 
     def _check_y(self, y):
