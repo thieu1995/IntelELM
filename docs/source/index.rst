@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Welcome to IntelELM's documentation!
-==================================
+====================================
 
 .. image:: https://img.shields.io/badge/release-0.1.0-yellow.svg
    :target: https://github.com/thieu1995/intelelm/releases

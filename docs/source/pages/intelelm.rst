@@ -1,27 +1,22 @@
 IntelELM Library
 ================
 
-intelelm.intelelm module
-------------------------
 
-.. automodule:: intelelm.intelelm
+intelelm.base\_elm module
+-------------------------
+
+.. automodule:: intelelm.base_elm
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. toctree::
-   :maxdepth: 4
 
-intelelm.utils package
-----------------------
+Subpackages
+-----------
 
 .. toctree::
    :maxdepth: 4
 
+   intelelm.model
    intelelm.utils
 
-.. toctree::
-   :maxdepth: 4
-
-.. toctree::
-   :maxdepth: 4
