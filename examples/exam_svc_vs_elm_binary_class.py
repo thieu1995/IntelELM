@@ -37,8 +37,8 @@ cm = ClassificationMetric(y_test, y_pred, decimal=6)
 print("Results of MhaElmClassifier on Breast Cancer dataset!")
 print(cm.get_metrics_by_list_names(["AS", "RS", "PS", "F1S"]))
 
-print("Trial my AS metric with score function")
+print("Try my AS metric with score function")
 print(model.score(X_test, y_test, method="AS"))
 
-print("Trial my multiple metrics with scores function")
+print("Try my multiple metrics with scores function")
 print(model.scores(X_test, y_test, list_methods=["AS", "PS", "F1S", "CEL", "BSL"]))
