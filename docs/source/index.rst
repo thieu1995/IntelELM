@@ -52,6 +52,8 @@ Welcome to IntelELM's documentation!
    :target: https://www.gnu.org/licenses/gpl-3.0
 
 
+**Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library**
+
 IntelELM (Intelligent Metaheuristic-based Extreme Learning Machine) is a Python library that implements a framework
 for training Extreme Learning Machine (ELM) networks using Metaheuristic Algorithms. It provides a comparable
 alternative to the traditional ELM network and is compatible with the Scikit-Learn library. With IntelELM, you can

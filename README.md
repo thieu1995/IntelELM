@@ -1,16 +1,7 @@
 
-[//]: # (<p align="center">)
-
-[//]: # (<img style="max-width:100%;" )
-
-[//]: # (src="https://thieu1995.github.io/post/2023-08/intelelm-02.png" )
-
-[//]: # (alt="IntelELM"/>)
-
-[//]: # (</p>)
-
-
-### Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library
+<p align="center">
+<img style="max-width:100%;" src="https://thieu1995.github.io/post/2023-08/intelelm.png" alt="IntelELM"/>
+</p>
 
 ---
 
