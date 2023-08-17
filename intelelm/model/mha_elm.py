@@ -6,10 +6,10 @@
 
 import numpy as np
 from permetrics import RegressionMetric, ClassificationMetric
+from sklearn.base import ClassifierMixin, RegressorMixin
 from sklearn.preprocessing import OneHotEncoder
 from intelelm.base_elm import BaseMhaElm, ELM
 from intelelm.utils.encoder import ObjectiveScaler
-from sklearn.base import ClassifierMixin, RegressorMixin
 
 
 class MhaElmRegressor(BaseMhaElm, RegressorMixin):
