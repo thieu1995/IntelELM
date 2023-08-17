@@ -43,7 +43,7 @@ perform searches and hyperparameter tuning using the functionalities provided by
 * **Total objective functions (as fitness functions)**: >= 61 (45 regressions and 16 classifications)
 * **Documentation:** https://intelelm.readthedocs.io/en/latest/
 * **Python versions:** >= 3.7.x
-* **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics, plotly, kaleido
+* **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics
 
 
 # Installation
