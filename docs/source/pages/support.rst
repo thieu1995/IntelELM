@@ -2,6 +2,12 @@
 Citation Request
 ================
 
+.. note::
+  If you want to understand how Metaheuristic is applied to Extreme Learning Machine, you need to read the paper
+  titled "A Metaheuristic Optimization Approach for Extreme Learning Machine". The paper can be accessed at the
+  following `this link <https://doi.org/10.1016/j.procs.2020.03.063>`_
+
+
 Please include these citations if you plan to use this library::
 
 	@software{nguyen_van_thieu_2023_8249046,
@@ -12,6 +18,17 @@ Please include these citations if you plan to use this library::
 	  publisher    = {Zenodo},
 	  doi          = {10.5281/zenodo.8249045},
 	  url          = {https://github.com/thieu1995/IntelELM}
+	}
+
+	@article{nguyen2020new,
+	  title={A new workload prediction model using extreme learning machine and enhanced tug of war optimization},
+	  author={Nguyen, Thieu and Hoang, Bao and Nguyen, Giang and Nguyen, Binh Minh},
+	  journal={Procedia Computer Science},
+	  volume={170},
+	  pages={362--369},
+	  year={2020},
+	  publisher={Elsevier},
+	  doi={10.1016/j.procs.2020.03.063}
 	}
 
 	@article{van2023mealpy,

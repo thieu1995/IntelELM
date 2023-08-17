@@ -46,6 +46,47 @@ perform searches and hyperparameter tuning using the functionalities provided by
 * **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics
 
 
+# Citation Request 
+
+If you want to understand how Metaheuristic is applied to Extreme Learning Machine, you need to read the paper 
+titled "A Metaheuristic Optimization Approach for Extreme Learning Machine". The paper can be accessed at the 
+following [this link](https://doi.org/10.1016/j.procs.2020.03.063)
+
+
+Please include these citations if you plan to use this library:
+
+```code
+@software{nguyen_van_thieu_2023_8249046,
+  author       = {Nguyen Van Thieu},
+  title        = {Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library},
+  month        = aug,
+  year         = 2023,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.8249045},
+  url          = {https://github.com/thieu1995/IntelELM}
+}
+
+@article{nguyen2020new,
+  title={A new workload prediction model using extreme learning machine and enhanced tug of war optimization},
+  author={Nguyen, Thieu and Hoang, Bao and Nguyen, Giang and Nguyen, Binh Minh},
+  journal={Procedia Computer Science},
+  volume={170},
+  pages={362--369},
+  year={2020},
+  publisher={Elsevier},
+  doi={10.1016/j.procs.2020.03.063}
+}
+
+@article{van2023mealpy,
+  title={MEALPY: An open-source library for latest meta-heuristic algorithms in Python},
+  author={Van Thieu, Nguyen and Mirjalili, Seyedali},
+  journal={Journal of Systems Architecture},
+  year={2023},
+  publisher={Elsevier},
+  doi={10.1016/j.sysarc.2023.102871}
+}
+```
+
 # Installation
 
 * Install the [current PyPI release](https://pypi.python.org/pypi/intelelm):
@@ -257,31 +298,6 @@ data.split_train_test(test_size=0.2, random_state=10)  # Try different random_st
     * https://github.com/thieu1995/MetaCluster
     * https://github.com/thieu1995/pfevaluator
     * https://github.com/aiir-team
-
-### Citation Request 
-
-Please include these citations if you plan to use this library:
-
-```code
-@software{nguyen_van_thieu_2023_8249046,
-  author       = {Nguyen Van Thieu},
-  title        = {Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library},
-  month        = aug,
-  year         = 2023,
-  publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.8249045},
-  url          = {https://github.com/thieu1995/IntelELM}
-}
-
-@article{van2023mealpy,
-  title={MEALPY: An open-source library for latest meta-heuristic algorithms in Python},
-  author={Van Thieu, Nguyen and Mirjalili, Seyedali},
-  journal={Journal of Systems Architecture},
-  year={2023},
-  publisher={Elsevier},
-  doi={10.1016/j.sysarc.2023.102871}
-}
-```
 
 ### Related Documents
 
