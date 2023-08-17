@@ -14,7 +14,7 @@
 
 ---
 
-[![GitHub release](https://img.shields.io/badge/release-0.1.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
+[![GitHub release](https://img.shields.io/badge/release-0.2.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
 [![Wheel](https://img.shields.io/pypi/wheel/gensim.svg)](https://pypi.python.org/pypi/intelelm) 
 [![PyPI version](https://badge.fury.io/py/intelelm.svg)](https://badge.fury.io/py/intelelm)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
@@ -27,7 +27,7 @@
 [![Chat](https://img.shields.io/badge/Chat-on%20Telegram-blue)](https://t.me/+fRVCJGuGJg1mNDg1)
 ![GitHub contributors](https://img.shields.io/github/contributors/thieu1995/intelelm.svg)
 [![GitTutorial](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg?)](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project)
-[![DOI](https://zenodo.org/badge/545209353.svg)](https://doi.org/10.5281/zenodo.7969042)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8249046.svg)](https://doi.org/10.5281/zenodo.8249046)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
@@ -127,7 +127,7 @@ to provide users with convenience and faster usage.
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder
-from intelelm import MhaElmRegressor, MhaElmClassifier
+from intelelm import ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier
 
 #### Step 2: Reading the dataset
 dataset = pd.read_csv('Position_Salaries.csv')
@@ -148,13 +148,24 @@ le_y.fit(y)
 y_train = le_y.transform(y_train)
 y_test = le_y.transform(y_test)
 
-#### Step 5: Fitting MhaElmRegressor or MhaElmClassifier to the dataset
+#### Step 5: Fitting ELM-based model to the dataset
+
+##### 5.1: Use standard ELM model for regression problem
+regressor = ElmRegressor(hidden_size=10, act_name="relu")
+regressor.fit(X_train, y_train)
+
+##### 5.2: Use standard ELM model for classification problem 
+classifer = ElmClassifier(hidden_size=10, act_name="tanh")
+classifer.fit(X_train, y_train)
+
+##### 5.3: Use Metaheuristic-based ELM model for regression problem
 print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 regressor = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras)
 regressor.fit(X_train, y_train)
 
+##### 5.4: Use Metaheuristic-based ELM model for classification problem
 print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
@@ -179,7 +190,7 @@ print(classifier.scores(X_test, y_test, list_methods=["AS", "PS", "F1S", "CEL", 
 
 ```python
 ### Step 1: Importing the libraries
-from intelelm import MhaElmRegressor, MhaElmClassifier, Data, get_dataset
+from intelelm import ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier, get_dataset
 
 #### Step 2: Reading the dataset
 data = get_dataset("aniso")
@@ -194,13 +205,24 @@ data.X_test = scaler_X.transform(data.X_test)
 data.y_train, scaler_y = data.encode_label(data.y_train)   # This is for classification problem only
 data.y_test = scaler_y.transform(data.y_test)
 
-#### Step 5: Fitting MhaElmRegressor or MhaElmClassifier to the dataset
+#### Step 5: Fitting ELM-based model to the dataset
+
+##### 5.1: Use standard ELM model for regression problem
+regressor = ElmRegressor(hidden_size=10, act_name="relu")
+regressor.fit(data.X_train, data.y_train)
+
+##### 5.2: Use standard ELM model for classification problem 
+classifer = ElmClassifier(hidden_size=10, act_name="tanh")
+classifer.fit(data.X_train, data.y_train)
+
+##### 5.3: Use Metaheuristic-based ELM model for regression problem
 print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 regressor = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras)
 regressor.fit(data.X_train, data.y_train)
 
+##### 5.4: Use Metaheuristic-based ELM model for classification problem
 print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
