@@ -7,4 +7,5 @@
 __version__ = "0.1.0"
 
 from intelelm.utils.data_loader import Data, get_dataset
-from .intelelm import MhaElmRegressor, MhaElmClassifier
+from intelelm.model.mha_elm import MhaElmRegressor, MhaElmClassifier
+from intelelm.model.standard_elm import ElmRegressor, ElmClassifier
