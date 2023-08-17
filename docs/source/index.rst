@@ -6,7 +6,7 @@
 Welcome to IntelELM's documentation!
 ====================================
 
-.. image:: https://img.shields.io/badge/release-0.2.0-yellow.svg
+.. image:: https://img.shields.io/badge/release-1.0.0-yellow.svg
    :target: https://github.com/thieu1995/intelelm/releases
 
 .. image:: https://img.shields.io/pypi/wheel/gensim.svg

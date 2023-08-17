@@ -14,7 +14,7 @@
 
 ---
 
-[![GitHub release](https://img.shields.io/badge/release-0.2.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
+[![GitHub release](https://img.shields.io/badge/release-1.0.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
 [![Wheel](https://img.shields.io/pypi/wheel/gensim.svg)](https://pypi.python.org/pypi/intelelm) 
 [![PyPI version](https://badge.fury.io/py/intelelm.svg)](https://badge.fury.io/py/intelelm)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
@@ -91,7 +91,7 @@ Please include these citations if you plan to use this library:
 
 * Install the [current PyPI release](https://pypi.python.org/pypi/intelelm):
 ```sh 
-$ pip install intelelm==0.1.0
+$ pip install intelelm==1.0.0
 ```
 
 * Install directly from source code
