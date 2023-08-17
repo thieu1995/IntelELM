@@ -4,7 +4,7 @@ Installation
 
 * Install the `current PyPI release <https://pypi.python.org/pypi/intelelm />`_::
 
-   $ pip install intelelm==0.1.0
+   $ pip install intelelm==0.2.0
 
 
 * Install directly from source code::
@@ -60,13 +60,24 @@ to provide users with convenience and faster usage.
 	y_train = le_y.transform(y_train)
 	y_test = le_y.transform(y_test)
 
-	#### Step 5: Fitting MhaElmRegressor or MhaElmClassifier to the dataset
+	#### Step 5: Fitting ELM-based model to the dataset
+
+	##### 5.1: Use standard ELM model for regression problem
+	regressor = ElmRegressor(hidden_size=10, act_name="relu")
+	regressor.fit(X_train, y_train)
+
+	##### 5.2: Use standard ELM model for classification problem
+	classifer = ElmClassifier(hidden_size=10, act_name="tanh")
+	classifer.fit(X_train, y_train)
+
+	##### 5.3: Use Metaheuristic-based ELM model for regression problem
 	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 	print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
 	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 	regressor = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras)
 	regressor.fit(X_train, y_train)
 
+	##### 5.4: Use Metaheuristic-based ELM model for classification problem
 	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 	print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
@@ -90,7 +101,7 @@ to provide users with convenience and faster usage.
 **Utilities everything that IntelELM provided**::
 
 	### Step 1: Importing the libraries
-	from intelelm import MhaElmRegressor, MhaElmClassifier, Data, get_dataset
+	from intelelm import ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier, get_dataset
 
 	#### Step 2: Reading the dataset
 	data = get_dataset("aniso")
@@ -105,13 +116,24 @@ to provide users with convenience and faster usage.
 	data.y_train, scaler_y = data.encode_label(data.y_train)   # This is for classification problem only
 	data.y_test = scaler_y.transform(data.y_test)
 
-	#### Step 5: Fitting MhaElmRegressor or MhaElmClassifier to the dataset
+	#### Step 5: Fitting ELM-based model to the dataset
+
+	##### 5.1: Use standard ELM model for regression problem
+	regressor = ElmRegressor(hidden_size=10, act_name="relu")
+	regressor.fit(data.X_train, data.y_train)
+
+	##### 5.2: Use standard ELM model for classification problem
+	classifer = ElmClassifier(hidden_size=10, act_name="tanh")
+	classifer.fit(data.X_train, data.y_train)
+
+	##### 5.3: Use Metaheuristic-based ELM model for regression problem
 	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 	print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
 	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 	regressor = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras)
 	regressor.fit(data.X_train, data.y_train)
 
+	##### 5.4: Use Metaheuristic-based ELM model for classification problem
 	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 	print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
