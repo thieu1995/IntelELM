@@ -1,8 +1,6 @@
 run_classification.py
 run_regression.py
-ChangeLog.md
 
-examples/wrapper/history/
 # Pycharm
 .idea/
 tut_upcode.md
