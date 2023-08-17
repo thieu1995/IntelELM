@@ -125,6 +125,13 @@ y_pred = regressor.predict(X_test)
 
 y_pred_cls = classifier.predict(X_test)
 y_pred_label = le_y.inverse_transform(y_pred_cls)
+
+#### Step 7: Calculate metrics using score or scores functions.
+print("Try my AS metric with score function")
+print(regressor.score(X_test, y_test, method="AS"))
+
+print("Try my multiple metrics with scores function")
+print(classifier.scores(X_test, y_test, list_methods=["AS", "PS", "F1S", "CEL", "BSL"]))
 ```
 
 #### Utilities everything that IntelELM provided
@@ -164,6 +171,13 @@ y_pred = regressor.predict(data.X_test)
 
 y_pred_cls = classifier.predict(data.X_test)
 y_pred_label = scaler_y.inverse_transform(y_pred_cls)
+
+#### Step 7: Calculate metrics using score or scores functions.
+print("Try my AS metric with score function")
+print(regressor.score(data.X_test, data.y_test, method="AS"))
+
+print("Try my multiple metrics with scores function")
+print(classifier.scores(data.X_test, data.y_test, list_methods=["AS", "PS", "F1S", "CEL", "BSL"]))
 ```
 
 A real-world dataset contains features that vary in magnitudes, units, and range. We would suggest performing 
