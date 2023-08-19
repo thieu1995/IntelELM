@@ -27,7 +27,7 @@ Welcome to IntelELM's documentation!
 .. image:: https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml/badge.svg
    :target: https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml
 
-.. image:: https://pepy.tech/badge/intelelm
+.. image:: https://static.pepy.tech/badge/intelelm
    :target: https://pepy.tech/project/intelelm
 
 .. image:: https://img.shields.io/github/release-date/thieu1995/intelelm.svg

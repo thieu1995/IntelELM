@@ -11,7 +11,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
 ![PyPI - Status](https://img.shields.io/pypi/status/intelelm.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/intelelm.svg)
-[![Downloads](https://pepy.tech/badge/intelelm)](https://pepy.tech/project/intelelm)
+[![Downloads](https://static.pepy.tech/badge/intelelm)](https://pepy.tech/project/intelelm)
 [![Tests & Publishes to PyPI](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml/badge.svg)](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml)
 ![GitHub Release Date](https://img.shields.io/github/release-date/thieu1995/intelelm.svg)
 [![Documentation Status](https://readthedocs.org/projects/intelelm/badge/?version=latest)](https://intelelm.readthedocs.io/en/latest/?badge=latest)
