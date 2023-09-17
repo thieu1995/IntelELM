@@ -1,4 +1,17 @@
 
+# Version 1.0.1 
+
++ Add "evaluate" function to all Estimators (ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier)
++ **Add new module "scaler"**
++ Our scaler can be utilized with multiple methods.
++ Add "save_loss_train" and "save_metrics" functions to all Estimators
++ Add "save_model" and "load_model" functions to all Estimators
++ Add "save_y_predicted" function to all Estimators
++ Update all examples and documents
+
+---------------------------------------------------------------------
+
+
 # Version 1.0.0 
 
 + Add supported information for each classes.
