@@ -12,24 +12,24 @@ def readme():
         README = f.read()
     return README
 
+
 setup(
     name="intelelm",
-    version="1.0.0",
+    version="1.0.1",
     author="Thieu",
     author_email="nguyenthieu2102@gmail.com",
-    description="Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library",
+    description="IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine",
     long_description=readme(),
     long_description_content_type="text/markdown",
     keywords=["extreme learning machine", "machine learning", "artificial intelligence",
-              " deep learning", "neural networks", "single hidden layer network",
+              " deep learning", "neural networks", "single hidden layer network", "metaheuristic-based ELM"
               "random projection", "kernel methods", "feature extraction", "classification", "regression",
-              "supervised learning", "online learning", "dimensionality reduction", "generalization", "ensemble learning",
-              "optimization algorithms", "Kernel ELM", "Cross-validation"
+              "supervised learning", "optimization algorithms", "Kernel ELM", "Cross-validation"
               "Genetic algorithm (GA)", "Particle swarm optimization (PSO)", "Ant colony optimization (ACO)",
               "Differential evolution (DE)", "Simulated annealing", "Grey wolf optimizer (GWO)", "Whale Optimization Algorithm (WOA)",
               "confusion matrix", "recall", "precision", "accuracy", "K-Nearest Neighbors", "random forest",
-              "support vector machine", "pearson correlation coefficient (PCC)", "spearman correlation coefficient (SCC)",
-              "relief", "relief-f", "multi-objectives optimization problems", "Stochastic optimization", "Global optimization",
+              "support vector machine", "scikit-learn models", "estimator", "Robust machine learning",
+              "shallow neural network", "nature-inspired ELM", "ELM network",
               "Convergence analysis", "Search space exploration", "Local search", "Computational intelligence", "Robust optimization",
               "Performance analysis", "Intelligent optimization", "Simulations"],
     url="https://github.com/thieu1995/intelelm",
@@ -70,7 +70,7 @@ setup(
         "Topic :: Utilities",
     ],
     install_requires=["numpy>=1.17.1", "scipy>=1.7.1", "scikit-learn>=1.0.2",
-                      "pandas>=1.3.5", "mealpy>=2.5.4", "permetrics>=1.4.3"],
+                      "pandas>=1.3.5", "mealpy>=2.5.4", "permetrics>=1.5.0"],
     extras_require={
         "dev": ["pytest>=7.0", "pytest-cov==4.0.0", "flake8>=4.0.1"],
     },

@@ -7,4 +7,4 @@ scipy>=1.7.1
 scikit-learn>=1.0.2
 pandas>=1.3.5
 mealpy>=2.5.4
-permetrics>=1.4.3
+permetrics>=1.5.0
