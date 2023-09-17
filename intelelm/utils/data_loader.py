@@ -8,8 +8,8 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from sklearn.model_selection import train_test_split
-from sklearn import preprocessing
 from intelelm.utils.encoder import LabelEncoder
+from intelelm.utils.scaler import DataTransformer
 
 
 class Data:
@@ -26,7 +26,7 @@ class Data:
     """
 
     SUPPORT = {
-        "scaler": ["StandardScaler", "MinMaxScaler", "MaxAbsScaler", "RobustScaler", "Normalizer"]
+        "scaler": list(DataTransformer.SUPPORTED_SCALERS.keys())
     }
 
     def __init__(self, X=None, y=None, name="Unknown"):
@@ -36,17 +36,15 @@ class Data:
         self.X_train, self.y_train, self.X_test, self.y_test = None, None, None, None
 
     @staticmethod
-    def scale(X, method="MinMaxScaler", **kwargs):
-        if method in Data.SUPPORT["scaler"]:
-            X = np.squeeze(np.asarray(X))
-            if X.ndim == 1:
-                X = np.reshape(X, (-1, 1))
-            if X.ndim > 3:
-                raise TypeError(f"Invalid X data type. It should be array-like with shape (n samples, m features)")
-            scaler = getattr(preprocessing, method)(**kwargs)
-            data = scaler.fit_transform(X)
-            return data, scaler
-        raise ValueError(f"Data class doesn't support scaling method name: {method}")
+    def scale(X, scaling_methods=('standard', )):
+        X = np.squeeze(np.asarray(X))
+        if X.ndim == 1:
+            X = np.reshape(X, (-1, 1))
+        if X.ndim >= 3:
+            raise TypeError(f"Invalid X data type. It should be array-like with shape (n samples, m features)")
+        scaler = DataTransformer(scaling_methods=scaling_methods)
+        data = scaler.fit_transform(X)
+        return data, scaler
 
     @staticmethod
     def encode_label(y):
