@@ -163,156 +163,34 @@ class BaseElm(BaseEstimator):
             return pred
         return self.obj_scaler.inverse_transform(pred)
 
-    def evaluate(self, y_true, y_pred, list_metrics):
-        pass
-
     def __evaluate_reg(self, y_true, y_pred, list_metrics=("MSE", "MAE")):
-        """Return the list of performance metrics of the prediction.
-
-        Parameters
-        ----------
-        y_true : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            True values for `X`.
-
-        y_pred : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            Predicted values for `X`.
-
-        list_metrics : list, default=("MSE", "MAE")
-            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
-
-        Returns
-        -------
-        results : dict
-            The results of the list metrics
-        """
         rm = RegressionMetric(y_true=y_true, y_pred=y_pred, decimal=8)
         return rm.get_metrics_by_list_names(list_metrics)
 
     def __evaluate_cls(self, y_true, y_pred, list_metrics=("AS", "RS")):
-        """
-        Return the list of metrics on the given test data and labels.
-
-        Parameters
-        ----------
-        y_true : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            True values for `X`.
-
-        y_pred : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            Predicted values for `X`.
-
-        list_metrics : list, default=("AS", "RS")
-            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
-
-        Returns
-        -------
-        results : dict
-            The results of the list metrics
-        """
         cm = ClassificationMetric(y_true, y_pred, decimal=8)
         return cm.get_metrics_by_list_names(list_metrics)
     
     def __score_reg(self, X, y, method="RMSE"):
-        """Return the metric of the prediction.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Test samples. For some estimators this may be a precomputed kernel matrix or a list of generic objects instead with shape
-            ``(n_samples, n_samples_fitted)``, where ``n_samples_fitted`` is the number of samples used in the fitting for the estimator.
-
-        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            True values for `X`.
-
-        method : str, default="RMSE"
-            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
-
-        Returns
-        -------
-        result : float
-            The result of selected metric
-        """
         method = self._check_method(method, list(self.SUPPORTED_REG_METRICS.keys()))
         y_pred = self.network.predict(X)
-        return RegressionMetric(y, y_pred, decimal=6).get_metric_by_name(method)[method]
+        return RegressionMetric(y, y_pred, decimal=8).get_metric_by_name(method)[method]
     
     def __scores_reg(self, X, y, list_methods=("MSE", "MAE")):
-        """Return the list of metrics of the prediction.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Test samples. For some estimators this may be a precomputed kernel matrix or a list of generic objects instead with shape
-            ``(n_samples, n_samples_fitted)``, where ``n_samples_fitted`` is the number of samples used in the fitting for the estimator.
-
-        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            True values for `X`.
-
-        list_methods : list, default=("MSE", "MAE")
-            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
-
-        Returns
-        -------
-        results : dict
-            The results of the list metrics
-        """
         y_pred = self.network.predict(X)
         return self.__evaluate_reg(y_true=y, y_pred=y_pred, list_metrics=list_methods)
 
     def __score_cls(self, X, y, method="AS"):
-        """
-        Return the metric on the given test data and labels.
-
-        In multi-label classification, this is the subset accuracy which is a harsh metric
-        since you require for each sample that each label set be correctly predicted.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Test samples.
-
-        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            True labels for `X`.
-
-        method : str, default="AS"
-            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
-
-        Returns
-        -------
-        result : float
-            The result of selected metric
-        """
         method = self._check_method(method, list(self.SUPPORTED_CLS_METRICS.keys()))
         return_prob = False
         if self.n_labels > 2:
             if method in self.CLS_OBJ_LOSSES:
                 return_prob = True
         y_pred = self.predict(X, return_prob=return_prob)
-        cm = ClassificationMetric(y_true=y, y_pred=y_pred, decimal=6)
+        cm = ClassificationMetric(y_true=y, y_pred=y_pred, decimal=8)
         return cm.get_metric_by_name(method)[method]
 
     def __scores_cls(self, X, y, list_methods=("AS", "RS")):
-        """
-        Return the list of metrics on the given test data and labels.
-
-        In multi-label classification, this is the subset accuracy which is a harsh metric
-        since you require for each sample that each label set be correctly predicted.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Test samples.
-
-        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            True labels for `X`.
-
-        list_methods : list, default=("AS", "RS")
-            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
-
-        Returns
-        -------
-        results : dict
-            The results of the list metrics
-        """
         list_errors = list(set(list_methods) & set(self.CLS_OBJ_LOSSES))
         list_scores = list((set(self.SUPPORTED_CLS_METRICS.keys()) - set(self.CLS_OBJ_LOSSES)) & set(list_methods))
         t1 = {}
@@ -325,6 +203,27 @@ class BaseElm(BaseEstimator):
         y_pred = self.predict(X, return_prob=False)
         t2 = self.__evaluate_cls(y_true=y, y_pred=y_pred, list_metrics=list_scores)
         return {**t2, **t1}
+
+    def evaluate(self, y_true, y_pred, list_metrics=None):
+        """Return the list of performance metrics of the prediction.
+
+        Parameters
+        ----------
+        y_true : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True values for `X`.
+
+        y_pred : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Predicted values for `X`.
+
+        list_metrics : list
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        results : dict
+            The results of the list metrics
+        """
+        pass
 
     def score(self, X, y, method=None):
         """Return the metric of the prediction.

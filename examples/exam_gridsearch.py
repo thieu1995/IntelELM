@@ -8,7 +8,6 @@ import pandas as pd
 import numpy as np
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
-from permetrics import ClassificationMetric
 from intelelm import MhaElmClassifier
 
 #### Load dataset
@@ -37,8 +36,7 @@ print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False)
 model.fit(X_train, y_train)
 pred = model.predict(X_test)
-cm = ClassificationMetric(y_test, pred)
-print(cm.get_metrics_by_list_names(["AS", "PS", "RS", "F1S"]))
+print(model.evaluate(y_test, pred, list_metrics=["AS", "PS", "RS", "F1S"]))
 
 print("================================================================================================")
 ######################################################################################################
@@ -67,5 +65,4 @@ print(grid.best_params_)
 # print how our model looks after hyper-parameter tuning
 print(grid.best_estimator_)
 grid_predictions = grid.predict(X_test)
-cm = ClassificationMetric(y_test, grid_predictions)
-print(cm.get_metrics_by_list_names(["AS", "PS", "RS", "F1S"]))
+print(model.evaluate(y_test, grid_predictions, list_metrics=["AS", "PS", "RS", "F1S"]))

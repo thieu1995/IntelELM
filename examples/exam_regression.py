@@ -19,13 +19,11 @@ data.y_train, scaler_y = data.scale(data.y_train, method="MinMaxScaler", feature
 data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
 opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="NNSE", optimizer="BaseGA", optimizer_paras=opt_paras)
+model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE", optimizer="BaseGA", optimizer_paras=opt_paras)
 model.fit(data.X_train, data.y_train)
 
-pred = model.predict(data.X_test)
-print(pred)
+y_pred = model.predict(data.X_test)
 
 print(model.score(data.X_test, data.y_test, method="RMSE"))
-print(model.score(data.X_test, data.y_test, method="MAPE"))
-print(model.score(data.X_test, data.y_test, method="R2"))
-print(model.score(data.X_test, data.y_test, method="NSE"))
+print(model.scores(data.X_test, data.y_test, list_methods=("RMSE", "R2")))
+print(model.evaluate(data.y_test, y_pred, list_metrics=("R2", "MAPE", "NSE")))
