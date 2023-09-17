@@ -4,6 +4,7 @@
 #       Github: https://github.com/thieu1995        %                         
 # --------------------------------------------------%
 
+import pickle
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -286,6 +287,19 @@ class BaseElm(BaseEstimator):
         results = self.evaluate(y_true, y_pred, list_metrics)
         df = pd.DataFrame.from_dict(results, orient='index').T
         df.to_csv(f"{save_path}/{filename}", index=False)
+
+    def save_model(self, save_path="history", filename="model.pkl"):
+        ## Save model to pickle file
+        Path(save_path).mkdir(parents=True, exist_ok=True)
+        if filename[-4:] != ".pkl":
+            filename += ".pkl"
+        pickle.dump(self, open(f"{save_path}/{filename}", 'wb'))
+
+    @staticmethod
+    def load_model(load_path="history", filename="model.pkl"):
+        if filename[-4:] != ".pkl":
+            filename += ".pkl"
+        return pickle.load(open(f"{load_path}/{filename}", 'rb'))
 
 
 class BaseMhaElm(BaseElm):
