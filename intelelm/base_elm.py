@@ -162,6 +162,54 @@ class BaseElm(BaseEstimator):
         if return_prob:
             return pred
         return self.obj_scaler.inverse_transform(pred)
+
+    def evaluate(self, y_true, y_pred, list_metrics):
+        pass
+
+    def __evaluate_reg(self, y_true, y_pred, list_metrics=("MSE", "MAE")):
+        """Return the list of performance metrics of the prediction.
+
+        Parameters
+        ----------
+        y_true : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True values for `X`.
+
+        y_pred : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Predicted values for `X`.
+
+        list_metrics : list, default=("MSE", "MAE")
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        results : dict
+            The results of the list metrics
+        """
+        rm = RegressionMetric(y_true=y_true, y_pred=y_pred, decimal=8)
+        return rm.get_metrics_by_list_names(list_metrics)
+
+    def __evaluate_cls(self, y_true, y_pred, list_metrics=("AS", "RS")):
+        """
+        Return the list of metrics on the given test data and labels.
+
+        Parameters
+        ----------
+        y_true : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True values for `X`.
+
+        y_pred : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Predicted values for `X`.
+
+        list_metrics : list, default=("AS", "RS")
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        results : dict
+            The results of the list metrics
+        """
+        cm = ClassificationMetric(y_true, y_pred, decimal=8)
+        return cm.get_metrics_by_list_names(list_metrics)
     
     def __score_reg(self, X, y, method="RMSE"):
         """Return the metric of the prediction.
@@ -176,7 +224,7 @@ class BaseElm(BaseEstimator):
             True values for `X`.
 
         method : str, default="RMSE"
-            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
 
         Returns
         -------
@@ -200,7 +248,7 @@ class BaseElm(BaseEstimator):
             True values for `X`.
 
         list_methods : list, default=("MSE", "MAE")
-            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
 
         Returns
         -------
@@ -208,8 +256,7 @@ class BaseElm(BaseEstimator):
             The results of the list metrics
         """
         y_pred = self.network.predict(X)
-        rm = RegressionMetric(y_true=y, y_pred=y_pred, decimal=6)
-        return rm.get_metrics_by_list_names(list_methods)
+        return self.__evaluate_reg(y_true=y, y_pred=y_pred, list_metrics=list_methods)
 
     def __score_cls(self, X, y, method="AS"):
         """
@@ -227,7 +274,7 @@ class BaseElm(BaseEstimator):
             True labels for `X`.
 
         method : str, default="AS"
-            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
 
         Returns
         -------
@@ -259,7 +306,7 @@ class BaseElm(BaseEstimator):
             True labels for `X`.
 
         list_methods : list, default=("AS", "RS")
-            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
 
         Returns
         -------
@@ -274,11 +321,9 @@ class BaseElm(BaseEstimator):
             if self.n_labels > 2:
                 return_prob = True
             y_pred = self.predict(X, return_prob=return_prob)
-            cm = ClassificationMetric(y, y_pred, decimal=6)
-            t1 = cm.get_metrics_by_list_names(list_errors)
+            t1 = self.__evaluate_cls(y_true=y, y_pred=y_pred, list_metrics=list_errors)
         y_pred = self.predict(X, return_prob=False)
-        cm = ClassificationMetric(y, y_pred, decimal=6)
-        t2 = cm.get_metrics_by_list_names(list_scores)
+        t2 = self.__evaluate_cls(y_true=y, y_pred=y_pred, list_metrics=list_scores)
         return {**t2, **t1}
 
     def score(self, X, y, method=None):
@@ -294,7 +339,7 @@ class BaseElm(BaseEstimator):
             True values for `X`.
 
         method : str, default="RMSE"
-            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
 
         Returns
         -------
@@ -316,7 +361,7 @@ class BaseElm(BaseEstimator):
             True values for `X`.
 
         list_methods : list, default=("MSE", "MAE")
-            You can get all of the metrics from Permetrics library: https://github.com/thieu1995/permetrics
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
 
         Returns
         -------

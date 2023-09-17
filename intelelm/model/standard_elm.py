@@ -99,6 +99,27 @@ class ElmRegressor(BaseElm, RegressorMixin):
         """
         return self._BaseElm__scores_reg(X, y, list_methods)
 
+    def evaluate(self, y_true, y_pred, list_metrics=("MSE", "MAE")):
+        """Return the list of performance metrics of the prediction.
+
+        Parameters
+        ----------
+        y_true : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True values for `X`.
+
+        y_pred : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Predicted values for `X`.
+
+        list_metrics : list, default=("MSE", "MAE")
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        results : dict
+            The results of the list metrics
+        """
+        return self._BaseElm__evaluate_reg(y_true, y_pred, list_metrics)
+
 
 class ElmClassifier(BaseElm, ClassifierMixin):
     """
@@ -198,3 +219,25 @@ class ElmClassifier(BaseElm, ClassifierMixin):
             The results of the list metrics
         """
         return self._BaseElm__scores_cls(X, y, list_methods)
+
+    def evaluate(self, y_true, y_pred, list_metrics=("AS", "RS")):
+        """
+        Return the list of performance metrics on the given test data and labels.
+
+        Parameters
+        ----------
+        y_true : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            True values for `X`.
+
+        y_pred : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Predicted values for `X`.
+
+        list_metrics : list, default=("AS", "RS")
+            You can get metrics from Permetrics library: https://github.com/thieu1995/permetrics
+
+        Returns
+        -------
+        results : dict
+            The results of the list metrics
+        """
+        return self._BaseElm__evaluate_cls(y_true, y_pred, list_metrics)
