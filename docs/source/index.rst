@@ -6,7 +6,7 @@
 Welcome to IntelELM's documentation!
 ====================================
 
-.. image:: https://img.shields.io/badge/release-1.0.0-yellow.svg
+.. image:: https://img.shields.io/badge/release-1.0.1-yellow.svg
    :target: https://github.com/thieu1995/intelelm/releases
 
 .. image:: https://img.shields.io/pypi/wheel/gensim.svg
@@ -52,7 +52,7 @@ Welcome to IntelELM's documentation!
    :target: https://www.gnu.org/licenses/gpl-3.0
 
 
-**Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library**
+**IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine**
 
 IntelELM (Intelligent Metaheuristic-based Extreme Learning Machine) is a Python library that implements a framework
 for training Extreme Learning Machine (ELM) networks using Metaheuristic Algorithms. It provides a comparable
@@ -60,10 +60,12 @@ alternative to the traditional ELM network and is compatible with the Scikit-Lea
 perform searches and hyperparameter tuning using the functionalities provided by the Scikit-Learn library.
 
 * **Free software:** GNU General Public License (GPL) V3 license
-* **Total Wrapper-based (Metaheuristic Algorithms)**: > 200 methods
-* **Total datasets**: 54 (47 classifications and 7 regressions)
-* **Total performance metrics**: >= 67 (47 regressions and 20 classifications)
-* **Total objective functions (as fitness functions)**: >= 61 (45 regressions and 16 classifications)
+* **Provided Estimator**: ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier
+* **Total Optimization-based ELM Regression**: > 200 Models
+* **Total Optimization-based ELM Classification**: > 200 Models
+* **Supported datasets**: 54 (47 classifications and 7 regressions)
+* **Supported performance metrics**: >= 67 (47 regressions and 20 classifications)
+* **Supported objective functions (as fitness functions or loss functions)**: >= 61 (45 regressions and 16 classifications)
 * **Documentation:** https://intelelm.readthedocs.io/en/latest/
 * **Python versions:** >= 3.7.x
 * **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics

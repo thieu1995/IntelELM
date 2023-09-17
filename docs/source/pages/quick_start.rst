@@ -4,7 +4,7 @@ Installation
 
 * Install the `current PyPI release <https://pypi.python.org/pypi/intelelm />`_::
 
-   $ pip install intelelm==1.0.0
+   $ pip install intelelm==1.0.1
 
 
 * Install directly from source code::
@@ -152,6 +152,13 @@ to provide users with convenience and faster usage.
 
 	print("Try my multiple metrics with scores function")
 	print(classifier.scores(data.X_test, data.y_test, list_methods=["AS", "PS", "F1S", "CEL", "BSL"]))
+
+	print("Try my evaluate functions")
+	print(regressor.evaluate(data.y_test, y_pred, list_metrics=("RMSE", "MAE", "MAPE", "NSE", "R2")))
+
+	#### Save results
+	regressor.save_loss_train(save_path="history", filename="loss_train.csv")
+	regressor.save_metrics(data.y_test, y_pred, list_metrics=("R2", "MAPE", "MAE", "MSE"), save_path="history", filename="metrics.csv")
 
 
 A real-world dataset contains features that vary in magnitudes, units, and range. We would suggest performing

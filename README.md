@@ -5,7 +5,7 @@
 
 ---
 
-[![GitHub release](https://img.shields.io/badge/release-1.0.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
+[![GitHub release](https://img.shields.io/badge/release-1.0.1-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
 [![Wheel](https://img.shields.io/pypi/wheel/gensim.svg)](https://pypi.python.org/pypi/intelelm) 
 [![PyPI version](https://badge.fury.io/py/intelelm.svg)](https://badge.fury.io/py/intelelm)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
@@ -28,10 +28,12 @@ alternative to the traditional ELM network and is compatible with the Scikit-Lea
 perform searches and hyperparameter tuning using the functionalities provided by the Scikit-Learn library.
 
 * **Free software:** GNU General Public License (GPL) V3 license
-* **Total Wrapper-based (Metaheuristic Algorithms)**: > 200 methods
-* **Total datasets**: 54 (47 classifications and 7 regressions)
-* **Total performance metrics**: >= 67 (47 regressions and 20 classifications)
-* **Total objective functions (as fitness functions)**: >= 61 (45 regressions and 16 classifications)
+* **Provided Estimator**: ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier
+* **Total Optimization-based ELM Regression**: > 200 Models 
+* **Total Optimization-based ELM Classification**: > 200 Models
+* **Supported datasets**: 54 (47 classifications and 7 regressions)
+* **Supported performance metrics**: >= 67 (47 regressions and 20 classifications)
+* **Supported objective functions (as fitness functions or loss functions)**: >= 61 (45 regressions and 16 classifications)
 * **Documentation:** https://intelelm.readthedocs.io/en/latest/
 * **Python versions:** >= 3.7.x
 * **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics
@@ -40,8 +42,8 @@ perform searches and hyperparameter tuning using the functionalities provided by
 # Citation Request 
 
 If you want to understand how Metaheuristic is applied to Extreme Learning Machine, you need to read the paper 
-titled "A Metaheuristic Optimization Approach for Extreme Learning Machine". The paper can be accessed at the 
-following [this link](https://doi.org/10.1016/j.procs.2020.03.063)
+titled "A new workload prediction model using extreme learning machine and enhanced tug of war optimization". 
+The paper can be accessed at the following [this link](https://doi.org/10.1016/j.procs.2020.03.063)
 
 
 Please include these citations if you plan to use this library:
@@ -49,7 +51,7 @@ Please include these citations if you plan to use this library:
 ```code
 @software{nguyen_van_thieu_2023_8249046,
   author       = {Nguyen Van Thieu},
-  title        = {Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library},
+  title        = {IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine},
   month        = aug,
   year         = 2023,
   publisher    = {Zenodo},
@@ -82,7 +84,7 @@ Please include these citations if you plan to use this library:
 
 * Install the [current PyPI release](https://pypi.python.org/pypi/intelelm):
 ```sh 
-$ pip install intelelm==1.0.0
+$ pip install intelelm==1.0.1
 ```
 
 * Install directly from source code
@@ -111,7 +113,7 @@ In this section, we will explore the usage of the IntelELM model with the assist
 preprocessing steps mentioned below can be replicated using Scikit-Learn, we have implemented some utility functions 
 to provide users with convenience and faster usage.  
 
-#### Combine IntelELM library like a normal library with scikit-learn.
+#### Combine IntelELM Models like a with scikit-learn functions
 
 ```python
 ### Step 1: Importing the libraries
@@ -190,7 +192,7 @@ data = get_dataset("aniso")
 data.split_train_test(test_size=0.2, shuffle=True, random_state=100)
 
 #### Step 4: Feature Scaling
-data.X_train, scaler_X = data.scale(data.X_train, method="MinMaxScaler", feature_range=(0, 1))
+data.X_train, scaler_X = data.scale(data.X_train, scaling_methods=("standard", "minmax"))
 data.X_test = scaler_X.transform(data.X_test)
 
 data.y_train, scaler_y = data.encode_label(data.y_train)   # This is for classification problem only
@@ -232,6 +234,13 @@ print(regressor.score(data.X_test, data.y_test, method="AS"))
 
 print("Try my multiple metrics with scores function")
 print(classifier.scores(data.X_test, data.y_test, list_methods=["AS", "PS", "F1S", "CEL", "BSL"]))
+
+print("Try my evaluate functions")
+print(regressor.evaluate(data.y_test, y_pred, list_metrics=("RMSE", "MAE", "MAPE", "NSE", "R2")))
+
+#### Save results
+regressor.save_loss_train(save_path="history", filename="loss_train.csv")
+regressor.save_metrics(data.y_test, y_pred, list_metrics=("R2", "MAPE", "MAE", "MSE"), save_path="history", filename="metrics.csv")
 ```
 
 A real-world dataset contains features that vary in magnitudes, units, and range. We would suggest performing 

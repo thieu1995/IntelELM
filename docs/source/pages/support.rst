@@ -4,15 +4,15 @@ Citation Request
 
 .. note::
   If you want to understand how Metaheuristic is applied to Extreme Learning Machine, you need to read the paper
-  titled "A Metaheuristic Optimization Approach for Extreme Learning Machine". The paper can be accessed at the
-  following `this link <https://doi.org/10.1016/j.procs.2020.03.063>`_
+  titled "A new workload prediction model using extreme learning machine and enhanced tug of war optimization".
+  The paper can be accessed at the following `this link <https://doi.org/10.1016/j.procs.2020.03.063>`_
 
 
 Please include these citations if you plan to use this library::
 
 	@software{nguyen_van_thieu_2023_8249046,
 	  author       = {Nguyen Van Thieu},
-	  title        = {Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library},
+	  title        = {IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine},
 	  month        = aug,
 	  year         = 2023,
 	  publisher    = {Zenodo},
