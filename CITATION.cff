@@ -4,8 +4,8 @@ authors:
   - family-names: "Van Thieu"
     given-names: "Nguyen"
     orcid: "https://orcid.org/0000-0001-9994-8747"
-title: "Intelligent Metaheuristic-based Extreme Learning Machine: IntelELM - An Open Source Python Library"
-version: 1.0.0
+title: "IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine"
+version: 1.0.1
 doi: 10.5281/zenodo.8249046
-date-released: 2023-08-15
+date-released: 2023-09-17
 url: "https://github.com/thieu1995/IntelELM"
