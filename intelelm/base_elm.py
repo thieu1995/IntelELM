@@ -5,6 +5,8 @@
 # --------------------------------------------------%
 
 import numpy as np
+import pandas as pd
+from pathlib import Path
 from permetrics import RegressionMetric, ClassificationMetric
 from sklearn.base import BaseEstimator
 from mealpy import get_optimizer_by_name, Optimizer, get_all_optimizers
@@ -268,6 +270,22 @@ class BaseElm(BaseEstimator):
             The results of the list metrics
         """
         pass
+
+    def save_loss_train(self, save_path="history", filename="loss.csv"):
+        ## Save loss train to csv file
+        Path(save_path).mkdir(parents=True, exist_ok=True)
+        if self.loss_train is None:
+            print(f"{self.__class__.__name__} model doesn't have training loss!")
+        else:
+            data = {"epoch": list(range(1, len(self.loss_train) + 1)), "loss": self.loss_train}
+            pd.DataFrame(data).to_csv(f"{save_path}/{filename}", index=False)
+
+    def save_metrics(self, y_true, y_pred, list_metrics=("RMSE", "MAE"), save_path="history", filename="metrics.csv"):
+        ## Save metrics to csv file
+        Path(save_path).mkdir(parents=True, exist_ok=True)
+        results = self.evaluate(y_true, y_pred, list_metrics)
+        df = pd.DataFrame.from_dict(results, orient='index').T
+        df.to_csv(f"{save_path}/{filename}", index=False)
 
 
 class BaseMhaElm(BaseElm):
