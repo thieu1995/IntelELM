@@ -11,6 +11,14 @@ def relu(x):
     return np.maximum(0, x)
 
 
+def leaky_relu(x, alpha=0.01):
+    return np.maximum(alpha * x, x)
+
+
+def celu(x, alpha=1.0):
+    return np.maximum(0, x) + np.minimum(0, alpha*(np.exp(x / alpha) - 1))
+
+
 def prelu(x, alpha=0.5):
     return np.where(x < 0, alpha*x, x)
 
@@ -48,7 +56,12 @@ def hard_sigmoid(x, lower=-2.5, upper=2.5):
     return np.where(x < lower, 0, np.where(x > upper, 1, 0.2*x + 0.5))
 
 
+def log_sigmoid(x):
+    return -np.log(1 + np.exp(-x))
+
+
 def swish(x):
+    # = silu (pytorch)
     return x / (1. + np.exp(-x))
 
 
@@ -78,3 +91,22 @@ def soft_shrink(x, alpha=0.5):
 
 def hard_shrink(x, alpha=0.5):
     return np.where(-alpha < x < alpha, x, 0)
+
+
+def softmin(x):
+    exp_x = np.exp(-x)
+    return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+
+
+def softmax(x):
+    exp_x = np.exp(x - np.max(x, axis=-1, keepdims=True))
+    return exp_x / np.sum(exp_x, axis=-1, keepdims=True)
+
+
+def log_softmax(x):
+    log_exp_x = x - np.max(x, axis=-1, keepdims=True)
+    log_exp_x = log_exp_x - np.log(np.sum(np.exp(log_exp_x), axis=-1, keepdims=True))
+    return log_exp_x
+
+
+silu = swish
