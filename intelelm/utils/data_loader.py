@@ -48,6 +48,9 @@ class Data:
 
     @staticmethod
     def encode_label(y):
+        y = np.squeeze(np.asarray(y))
+        if y.ndim != 1:
+            raise TypeError(f"Invalid y data type. It should be a vector / array-like with shape (n samples,)")
         scaler = LabelEncoder()
         data = scaler.fit_transform(y)
         return data, scaler
