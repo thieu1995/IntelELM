@@ -173,30 +173,44 @@ class SinhArcSinhScaler(BaseEstimator, TransformerMixin):
 
 class DataTransformer(BaseEstimator, TransformerMixin):
 
-    SUPPORTED_SCALERS = {"standard": StandardScaler(), "minmax": MinMaxScaler(), "max-abs": MaxAbsScaler(),
-                         "log1p": Log1pScaler(), "loge": LogeScaler(), "sqrt": SqrtScaler(),
-                         "sinh-arc-sinh": SinhArcSinhScaler(), "robust": RobustScaler(),
-                         "box-cox": BoxCoxScaler(), "yeo-johnson": YeoJohnsonScaler()}
+    SUPPORTED_SCALERS = {"standard": StandardScaler, "minmax": MinMaxScaler, "max-abs": MaxAbsScaler,
+                         "log1p": Log1pScaler, "loge": LogeScaler, "sqrt": SqrtScaler,
+                         "sinh-arc-sinh": SinhArcSinhScaler, "robust": RobustScaler,
+                         "box-cox": BoxCoxScaler, "yeo-johnson": YeoJohnsonScaler}
 
-    def __init__(self, scaling_methods=('standard', )):
+    def __init__(self, scaling_methods=('standard', ), list_dict_paras=None):
         if type(scaling_methods) is str:
+            if list_dict_paras is None:
+                self.list_dict_paras = [{}]
+            elif type(list_dict_paras) is dict:
+                self.list_dict_paras = [list_dict_paras]
+            else:
+                raise TypeError(f"You use only 1 scaling method, the list_dict_paras should be dict of parameter for that scaler.")
             self.scaling_methods = [scaling_methods]
         elif type(scaling_methods) in (tuple, list, np.ndarray):
+            if list_dict_paras is None:
+                self.list_dict_paras = [{}, ]*len(scaling_methods)
+            elif type(list_dict_paras) in (tuple, list, np.ndarray):
+                self.list_dict_paras = list(list_dict_paras)
+            else:
+                raise TypeError(f"Invalid type of list_dict_paras. Supported type are: tuple, list, or np.ndarray of parameter dict")
             self.scaling_methods = list(scaling_methods)
         else:
             raise TypeError(f"Invalid type of scaling_methods. Supported type are: str, tuple, list, or np.ndarray")
-        self.scalers = []
 
-    def _get_scaler(self, technique):
+        self.scalers = [self._get_scaler(technique, paras) for (technique, paras) in zip(self.scaling_methods, self.list_dict_paras)]
+
+    def _get_scaler(self, technique, paras):
         if technique in self.SUPPORTED_SCALERS.keys():
-            return self.SUPPORTED_SCALERS[technique]
+            if type(paras) is not dict:
+                paras = {}
+            return self.SUPPORTED_SCALERS[technique](**paras)
         else:
             raise ValueError(f"Invalid scaling technique. Supported techniques are {self.SUPPORTED_SCALERS.keys()}")
 
     def fit(self, X, y=None):
-        self.scalers = [self._get_scaler(technique) for technique in self.scaling_methods]
-        for scaler in self.scalers:
-            X = scaler.fit_transform(X)
+        for idx, _ in enumerate(self.scalers):
+            X = self.scalers[idx].fit_transform(X)
         return self
 
     def transform(self, X):
