@@ -4,7 +4,7 @@ Installation
 
 * Install the `current PyPI release <https://pypi.python.org/pypi/intelelm />`_::
 
-   $ pip install intelelm==1.0.1
+   $ pip install intelelm==1.0.2
 
 
 * Install directly from source code::
@@ -110,7 +110,7 @@ to provide users with convenience and faster usage.
 	data.split_train_test(test_size=0.2, shuffle=True, random_state=100)
 
 	#### Step 4: Feature Scaling
-	data.X_train, scaler_X = data.scale(data.X_train, method="MinMaxScaler", feature_range=(0, 1))
+	data.X_train, scaler_X = data.scale(data.X_train, scaling_methods="standard")
 	data.X_test = scaler_X.transform(data.X_test)
 
 	data.y_train, scaler_y = data.encode_label(data.y_train)   # This is for classification problem only

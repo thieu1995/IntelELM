@@ -6,7 +6,7 @@
 Welcome to IntelELM's documentation!
 ====================================
 
-.. image:: https://img.shields.io/badge/release-1.0.1-yellow.svg
+.. image:: https://img.shields.io/badge/release-1.0.2-yellow.svg
    :target: https://github.com/thieu1995/intelelm/releases
 
 .. image:: https://img.shields.io/pypi/wheel/gensim.svg
@@ -65,7 +65,7 @@ perform searches and hyperparameter tuning using the functionalities provided by
 * **Total Optimization-based ELM Classification**: > 200 Models
 * **Supported datasets**: 54 (47 classifications and 7 regressions)
 * **Supported performance metrics**: >= 67 (47 regressions and 20 classifications)
-* **Supported objective functions (as fitness functions or loss functions)**: >= 61 (45 regressions and 16 classifications)
+* **Supported objective functions (as fitness functions or loss functions)**: >= 67 (47 regressions and 20 classifications)
 * **Documentation:** https://intelelm.readthedocs.io/en/latest/
 * **Python versions:** >= 3.7.x
 * **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics
