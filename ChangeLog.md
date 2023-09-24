@@ -1,5 +1,14 @@
 
-# Version 1.0.1 
+# Version 1.0.2
+
++ Fix bug in DataTransformer class
++ Fix bug in LabelEncoder class
++ Add more activation functions 
++ Update documents, examples
+
+---------------------------------------------------------------------
+
+# Version 1.0.1
 
 + Add "evaluate" function to all Estimators (ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier)
 + **Add new module "scaler"**

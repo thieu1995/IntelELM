@@ -5,7 +5,7 @@
 
 ---
 
-[![GitHub release](https://img.shields.io/badge/release-1.0.1-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
+[![GitHub release](https://img.shields.io/badge/release-1.0.2-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
 [![Wheel](https://img.shields.io/pypi/wheel/gensim.svg)](https://pypi.python.org/pypi/intelelm) 
 [![PyPI version](https://badge.fury.io/py/intelelm.svg)](https://badge.fury.io/py/intelelm)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
@@ -33,7 +33,7 @@ perform searches and hyperparameter tuning using the functionalities provided by
 * **Total Optimization-based ELM Classification**: > 200 Models
 * **Supported datasets**: 54 (47 classifications and 7 regressions)
 * **Supported performance metrics**: >= 67 (47 regressions and 20 classifications)
-* **Supported objective functions (as fitness functions or loss functions)**: >= 61 (45 regressions and 16 classifications)
+* **Supported objective functions (as fitness functions or loss functions)**: >= 67 (47 regressions and 20 classifications)
 * **Documentation:** https://intelelm.readthedocs.io/en/latest/
 * **Python versions:** >= 3.7.x
 * **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics
@@ -84,7 +84,7 @@ Please include these citations if you plan to use this library:
 
 * Install the [current PyPI release](https://pypi.python.org/pypi/intelelm):
 ```sh 
-$ pip install intelelm==1.0.1
+$ pip install intelelm==1.0.2
 ```
 
 * Install directly from source code
