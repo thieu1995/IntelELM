@@ -31,8 +31,9 @@ class ELM:
     size_output : int, default=1
         The number of output nodes
 
-    act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+    act_name : {"relu", "leaky_relu", "celu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid",
+        "hard_sigmoid", "log_sigmoid", "silu", "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink",
+        "soft_shrink", "hard_shrink", "softmin", "softmax", "log_softmax" }, default='sigmoid'
         Activation function for the hidden layer.
     """
     def __init__(self, size_input=5, size_hidden=10, size_output=1, act_name='sigmoid'):
@@ -113,8 +114,9 @@ class BaseElm(BaseEstimator):
     hidden_size : int, default=10
         The number of hidden nodes
 
-    act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+    act_name : {"relu", "leaky_relu", "celu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid",
+        "hard_sigmoid", "log_sigmoid", "silu", "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink",
+        "soft_shrink", "hard_shrink", "softmin", "softmax", "log_softmax" }, default='sigmoid'
         Activation function for the hidden layer.
     """
 
@@ -273,7 +275,14 @@ class BaseElm(BaseEstimator):
         pass
 
     def save_loss_train(self, save_path="history", filename="loss.csv"):
-        ## Save loss train to csv file
+        """
+        Save the loss (convergence) during the training process to csv file.
+
+        Parameters
+        ----------
+        save_path : saved path (relative path, consider from current executed script path)
+        filename : name of the file, needs to have ".csv" extension
+        """
         Path(save_path).mkdir(parents=True, exist_ok=True)
         if self.loss_train is None:
             print(f"{self.__class__.__name__} model doesn't have training loss!")
@@ -282,21 +291,47 @@ class BaseElm(BaseEstimator):
             pd.DataFrame(data).to_csv(f"{save_path}/{filename}", index=False)
 
     def save_metrics(self, y_true, y_pred, list_metrics=("RMSE", "MAE"), save_path="history", filename="metrics.csv"):
-        ## Save metrics to csv file
+        """
+        Save evaluation metrics to csv file
+
+        Parameters
+        ----------
+        y_true : ground truth data
+        y_pred : predicted output
+        list_metrics : list of evaluation metrics
+        save_path : saved path (relative path, consider from current executed script path)
+        filename : name of the file, needs to have ".csv" extension
+        """
         Path(save_path).mkdir(parents=True, exist_ok=True)
         results = self.evaluate(y_true, y_pred, list_metrics)
         df = pd.DataFrame.from_dict(results, orient='index').T
         df.to_csv(f"{save_path}/{filename}", index=False)
 
     def save_y_predicted(self, X, y_true, save_path="history", filename="y_predicted.csv"):
-        ## Save the predicted results to csv file
+        """
+        Save the predicted results to csv file
+
+        Parameters
+        ----------
+        X : The features data, type of nd.ndarray
+        y_true : The ground truth data
+        save_path : saved path (relative path, consider from current executed script path)
+        filename : name of the file, needs to have ".csv" extension
+        """
         Path(save_path).mkdir(parents=True, exist_ok=True)
         y_pred = self.predict(X, return_prob=False)
         data = {"y_true": np.squeeze(np.asarray(y_true)), "y_pred": np.squeeze(np.asarray(y_pred))}
         pd.DataFrame(data).to_csv(f"{save_path}/{filename}", index=False)
 
     def save_model(self, save_path="history", filename="model.pkl"):
-        ## Save model to pickle file
+        """
+        Save model to pickle file
+
+        Parameters
+        ----------
+        save_path : saved path (relative path, consider from current executed script path)
+        filename : name of the file, needs to have ".pkl" extension
+        """
         Path(save_path).mkdir(parents=True, exist_ok=True)
         if filename[-4:] != ".pkl":
             filename += ".pkl"
@@ -318,8 +353,9 @@ class BaseMhaElm(BaseElm):
     hidden_size : int, default=10
         The number of hidden nodes
 
-    act_name : {"relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
-        "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink" }, default='sigmoid'
+    act_name : {"relu", "leaky_relu", "celu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid",
+        "hard_sigmoid", "log_sigmoid", "silu", "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink",
+        "soft_shrink", "hard_shrink", "softmin", "softmax", "log_softmax" }, default='sigmoid'
         Activation function for the hidden layer.
 
     obj_name : None or str, default=None
