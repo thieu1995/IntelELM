@@ -1,4 +1,11 @@
 
+# Version 1.0.3
+
++ Fix bug lb and ub in BaseMhaElm class
++ Update docs and add example
+
+---------------------------------------------------------------------
+
 # Version 1.0.2
 
 + Fix bug in DataTransformer class

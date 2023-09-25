@@ -5,7 +5,7 @@
 
 ---
 
-[![GitHub release](https://img.shields.io/badge/release-1.0.2-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
+[![GitHub release](https://img.shields.io/badge/release-1.0.3-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
 [![Wheel](https://img.shields.io/pypi/wheel/gensim.svg)](https://pypi.python.org/pypi/intelelm) 
 [![PyPI version](https://badge.fury.io/py/intelelm.svg)](https://badge.fury.io/py/intelelm)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
@@ -84,7 +84,7 @@ Please include these citations if you plan to use this library:
 
 * Install the [current PyPI release](https://pypi.python.org/pypi/intelelm):
 ```sh 
-$ pip install intelelm==1.0.2
+$ pip install intelelm==1.0.3
 ```
 
 * Install directly from source code
@@ -299,6 +299,30 @@ data = Data(X, y)
 data.split_train_test(test_size=0.2, random_state=10)  # Try different random_state value 
 ```
 
+3) When testing several algorithms based on Extreme Learning Machines (ELM), they all produce the same results. 
+   Even during the training process, the global best solution remains unchanged.
++ This issue was identified in version <= v1.0.2 when the default values for the lower bound (lb) and upper bound 
+  (ub) were set in the narrow range of (-1, 1). This limited range proved to be too small, causing all algorithms to 
+  converge to local optima. Fortunately, this problem has been addressed in versions > v1.0.3, where the default 
+  range has been extended to (-10., 10.). You also can define your own lb and ub ranges depend on your problem.
++ In traditional neural network like MLP, they weights (weights + biases) are typically initialized within the range 
+  of (-1., 1.). However, during training using gradient-based methods, these values are updated, and there are no 
+  strict bounds on them.
++ Meanwhile, in metaheuristic optimization, it's necessary to set boundaries for decision variables (weights) each 
+  time a new search agent is formed. Therefore, if you define a narrow range, your optimizer may converge more 
+  quickly, but it's more likely to get stuck in local optima (which explains why the global best value remains 
+  unchanged during training). Moreover, in some cases, there might not even be a global optimum within that narrow 
+  range. Conversely, if you set a wider range, the optimization process may be slower, and the global best value may 
+  change more gradually. In such cases, you might need to increase the number of epochs, perhaps up to 1000, for the 
+  optimizer to explore the solution space thoroughly.
+
+```python
+opt_paras = {"name": "GA", "epoch": 30, "pop_size": 30}
+model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA", 
+                         optimizer_paras=opt_paras, verbose=True)
+model.fit(X_train, y_train, lb=(-10., ), ub=(10., ))
+y_pred = model.predict(X_test)
+```
 
 # Support (questions, problems)
 
