@@ -313,7 +313,7 @@ class BaseElm(BaseEstimator):
 
         Parameters
         ----------
-        X : The features data, type of nd.ndarray
+        X : The features data, nd.ndarray
         y_true : The ground truth data
         save_path : saved path (relative path, consider from current executed script path)
         filename : name of the file, needs to have ".csv" extension
@@ -412,16 +412,34 @@ class BaseMhaElm(BaseElm):
     def fitness_function(self, solution=None):
         pass
 
-    def fit(self, X, y):
+    def fit(self, X, y, lb=(-10.0, ), ub=(10.0, ), save_population=False):
+        """
+        Parameters
+        ----------
+        X : The features data, np.ndarray
+        y : The ground truth data
+        lb : The lower bound for decision variables in optimization problem (The weights and biases of network)
+        ub : The upper bound for decision variables in optimization problem (The weights and biases of network)
+        save_population : Save the population of search agents (Don't set it to True when you don't know how to use it)
+        """
         self.network, self.obj_scaler = self.create_network(X, y)
         y_scaled = self.obj_scaler.transform(y)
         self.X_temp, self.y_temp = X, y_scaled
-        self.size_w1 = X.shape[1] * self.hidden_size
-        self.size_b = self.hidden_size
-        self.size_w2 = self.hidden_size * 1
-        problem_size = self.size_w1 + self.size_b
-        lb = [-1, ] * problem_size
-        ub = [1, ] * problem_size
+        problem_size = X.shape[1] * self.hidden_size + self.hidden_size
+        if type(lb) in (list, tuple, np.ndarray) and type(ub) in (list, tuple, np.ndarray):
+            if len(lb) == len(ub):
+                if len(lb) == 1:
+                    lb = np.array(lb * problem_size, dtype=float)
+                    ub = np.array(ub * problem_size, dtype=float)
+                elif len(lb) != problem_size:
+                    raise ValueError(f"Invalid lb and ub. Their length should be equal to 1 or problem_size.")
+            else:
+                raise ValueError(f"Invalid lb and ub. They should have the same length.")
+        elif type(lb) in (int, float) and type(ub) in (int, float):
+            lb = (float(lb), ) * problem_size
+            ub = (float(ub), ) * problem_size
+        else:
+            raise ValueError(f"Invalid lb and ub. They should be a number of list/tuple/np.ndarray with size equal to problem_size")
         log_to = "console" if self.verbose else "None"
         if self.obj_name is None:
             raise ValueError("obj_name can't be None")
@@ -438,7 +456,7 @@ class BaseMhaElm(BaseElm):
             "ub": ub,
             "minmax": minmax,
             "log_to": log_to,
-            "save_population": False,
+            "save_population": save_population,
             "obj_weights": self.obj_weights
         }
         self.solution, self.best_fit = self.optimizer.solve(problem)
