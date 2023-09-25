@@ -299,8 +299,8 @@ data = Data(X, y)
 data.split_train_test(test_size=0.2, random_state=10)  # Try different random_state value 
 ```
 
-3) When testing several algorithms based on Extreme Learning Machines (ELM), they all produce the same results. 
-   Even during the training process, the global best solution remains unchanged.
+3) **When testing several algorithms based on Extreme Learning Machines (ELM), they all produce the same results. 
+   Even during the training process, the global best solution remains unchanged.**
 + This issue was identified in version <= v1.0.2 when the default values for the lower bound (lb) and upper bound 
   (ub) were set in the narrow range of (-1, 1). This limited range proved to be too small, causing all algorithms to 
   converge to local optima. Fortunately, this problem has been addressed in versions > v1.0.3, where the default 
