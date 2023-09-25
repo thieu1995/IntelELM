@@ -5,7 +5,7 @@ authors:
     given-names: "Nguyen"
     orcid: "https://orcid.org/0000-0001-9994-8747"
 title: "IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine"
-version: 1.0.2
-doi: 10.5281/zenodo.8249046
-date-released: 2023-09-24
+version: 1.0.3
+doi: 10.5281/zenodo.8249045
+date-released: 2023-09-25
 url: "https://github.com/thieu1995/IntelELM"

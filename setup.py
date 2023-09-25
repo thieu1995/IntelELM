@@ -15,7 +15,7 @@ def readme():
 
 setup(
     name="intelelm",
-    version="1.0.2",
+    version="1.0.3",
     author="Thieu",
     author_email="nguyenthieu2102@gmail.com",
     description="IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine",

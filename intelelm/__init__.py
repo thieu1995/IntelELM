@@ -4,7 +4,7 @@
 #       Github: https://github.com/thieu1995        %                         
 # --------------------------------------------------%
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 from intelelm.utils.scaler import DataTransformer
 from intelelm.utils.data_loader import Data, get_dataset
