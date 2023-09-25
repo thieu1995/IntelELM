@@ -4,7 +4,7 @@ Installation
 
 * Install the `current PyPI release <https://pypi.python.org/pypi/intelelm />`_::
 
-   $ pip install intelelm==1.0.2
+   $ pip install intelelm==1.0.3
 
 
 * Install directly from source code::
