@@ -107,9 +107,13 @@ $ python
 >>> intelelm.__version__
 ```
 
-### Examples
+### Tutorials
 
-* End-to-end tutorials can be found inside [notebooks](notebooks) directory.
+* Tutorials can be found inside [tutorials](./tutorials) directory.
+  * [Building a handwritten digits classifier using IntelELM](./tutorials/example_hand_written_digits.ipynb)
+  * [Building a house price predictor using IntelELM](./tutorials/example_california_housing.ipynb)
+
+### Examples
 
 * In this section, we will explore the usage of the IntelELM model with the assistance of a dataset. While all the 
 preprocessing steps mentioned below can be replicated using Scikit-Learn, we have implemented some utility functions 
