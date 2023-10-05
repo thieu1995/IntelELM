@@ -107,11 +107,17 @@ $ python
 >>> intelelm.__version__
 ```
 
+### Tutorials
+
+* Tutorials can be found inside [tutorials](./tutorials) directory.
+  * [Building a handwritten digits classifier using IntelELM](./tutorials/example_hand_written_digits.ipynb)
+  * [Building a house price predictor using IntelELM](./tutorials/example_california_housing.ipynb)
+
 ### Examples
 
-In this section, we will explore the usage of the IntelELM model with the assistance of a dataset. While all the 
+* In this section, we will explore the usage of the IntelELM model with the assistance of a dataset. While all the 
 preprocessing steps mentioned below can be replicated using Scikit-Learn, we have implemented some utility functions 
-to provide users with convenience and faster usage.  
+to provide users with convenience and faster usage.
 
 #### Combine IntelELM Models like a with scikit-learn functions
 
@@ -246,7 +252,6 @@ regressor.save_metrics(data.y_test, y_pred, list_metrics=("R2", "MAPE", "MAE", "
 A real-world dataset contains features that vary in magnitudes, units, and range. We would suggest performing 
 normalization when the scale of a feature is irrelevant or misleading. Feature Scaling basically helps to normalize 
 the data within a particular range.
-
 
 
 1) Where do I find the supported metrics like above ["AS", "PS", "RS"]. What is that?
