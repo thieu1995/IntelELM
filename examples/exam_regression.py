@@ -11,11 +11,11 @@ from intelelm import get_dataset, MhaElmRegressor
 data = get_dataset("diabetes")
 data.split_train_test(test_size=0.2, random_state=2)
 print(data.X_train.shape, data.X_test.shape)
-
-data.X_train, scaler_X = data.scale(data.X_train, method="MinMaxScaler", feature_range=(0, 1))
+# scaling_methods=('standard', ), list_dict_paras
+data.X_train, scaler_X = data.scale(data.X_train, scaling_methods=('minmax', ))
 data.X_test = scaler_X.transform(data.X_test)
 
-data.y_train, scaler_y = data.scale(data.y_train, method="MinMaxScaler", feature_range=(0, 1))
+data.y_train, scaler_y = data.scale(data.y_train, scaling_methods=('minmax', ))
 data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
 opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}

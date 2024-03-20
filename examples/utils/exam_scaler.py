@@ -59,7 +59,8 @@ print(X_unscaled)
 
 ### 4) Use methods in Data class with parameters
 data = Data(X)
-X_scaled, scaler = data.scale(X, scaling_methods=("sinh-arc-sinh", "minmax"), list_dict_paras=({"epsilon": 0.5, "delta": 2.5}, None))
+X_scaled, scaler = data.scale(X, scaling_methods=("sinh-arc-sinh", "minmax"),
+                              list_dict_paras=({"epsilon": 0.5, "delta": 2.5}, None))
 X_unscaled = scaler.inverse_transform(X_scaled)
 
 # Print the results
@@ -73,7 +74,8 @@ print(X_unscaled)
 
 ### 5) Use methods in Data class with parameters
 data = Data(X)
-X_scaled, scaler = data.scale(X, scaling_methods=("yeo-johnson", "sinh-arc-sinh"), list_dict_paras=({"lamda": 1.2}, {"epsilon": 0.5, "delta": 2.5}))
+X_scaled, scaler = data.scale(X, scaling_methods=("yeo-johnson", "sinh-arc-sinh"),
+                              list_dict_paras=({"lmbda": 1.2}, {"epsilon": 0.5, "delta": 2.5}))
 X_unscaled = scaler.inverse_transform(X_scaled)
 
 # Print the results

@@ -15,7 +15,7 @@ y = np.array([[1, 2, 0],
               [0, 0, 1],
               [0, 2, 2]])
 
-# y = np.array([[1, 2, 0]])
+y = np.array([[1, 2, 0]])
 
 data = Data(X, y)
 y, le = data.encode_label(y)
