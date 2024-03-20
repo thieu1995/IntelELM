@@ -17,7 +17,7 @@ from permetrics.classification import ClassificationMetric
 def get_metrics(problem, y_true, y_pred, metrics=None, testcase="test"):
     if problem == "regression":
         evaluator = RegressionMetric(y_true, y_pred)
-        paras = [{"decimal": 4}, ] * len(metrics)
+        paras = [{}, ] * len(metrics)
     else:
         evaluator = ClassificationMetric(y_true, y_pred)
         paras = [{"average": "weighted"}, ] * len(metrics)

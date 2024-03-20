@@ -10,7 +10,7 @@ import pandas as pd
 from pathlib import Path
 from permetrics import RegressionMetric, ClassificationMetric
 from sklearn.base import BaseEstimator
-from mealpy import get_optimizer_by_name, Optimizer, get_all_optimizers
+from mealpy import get_optimizer_by_name, Optimizer, get_all_optimizers, FloatVar
 from intelelm.utils import activation, validator
 from intelelm.utils.evaluator import get_all_regression_metrics, get_all_classification_metrics
 
@@ -169,17 +169,17 @@ class BaseElm(BaseEstimator):
         return self.obj_scaler.inverse_transform(pred)
 
     def __evaluate_reg(self, y_true, y_pred, list_metrics=("MSE", "MAE")):
-        rm = RegressionMetric(y_true=y_true, y_pred=y_pred, decimal=8)
+        rm = RegressionMetric(y_true=y_true, y_pred=y_pred)
         return rm.get_metrics_by_list_names(list_metrics)
 
     def __evaluate_cls(self, y_true, y_pred, list_metrics=("AS", "RS")):
-        cm = ClassificationMetric(y_true, y_pred, decimal=8)
+        cm = ClassificationMetric(y_true, y_pred)
         return cm.get_metrics_by_list_names(list_metrics)
     
     def __score_reg(self, X, y, method="RMSE"):
         method = self._check_method(method, list(self.SUPPORTED_REG_METRICS.keys()))
         y_pred = self.network.predict(X)
-        return RegressionMetric(y, y_pred, decimal=8).get_metric_by_name(method)[method]
+        return RegressionMetric(y, y_pred).get_metric_by_name(method)[method]
     
     def __scores_reg(self, X, y, list_methods=("MSE", "MAE")):
         y_pred = self.network.predict(X)
@@ -192,7 +192,7 @@ class BaseElm(BaseEstimator):
             if method in self.CLS_OBJ_LOSSES:
                 return_prob = True
         y_pred = self.predict(X, return_prob=return_prob)
-        cm = ClassificationMetric(y_true=y, y_pred=y_pred, decimal=8)
+        cm = ClassificationMetric(y_true=y, y_pred=y_pred)
         return cm.get_metric_by_name(method)[method]
 
     def __scores_cls(self, X, y, list_methods=("AS", "RS")):
@@ -405,8 +405,8 @@ class BaseMhaElm(BaseElm):
     def _get_history_loss(self, optimizer=None):
         list_global_best = optimizer.history.list_global_best
         # 2D array / matrix 2D
-        global_obj_list = np.array([agent[1][-1] for agent in list_global_best])
-        # Make each obj_list as a element in array for drawing
+        global_obj_list = np.array([agent.target.objectives for agent in list_global_best])
+        # Make each obj_list as an element in array for drawing
         return global_obj_list[:, 0]
 
     def fitness_function(self, solution=None):
@@ -451,15 +451,15 @@ class BaseMhaElm(BaseElm):
             else:
                 raise ValueError("obj_name is not supported. Please check the library: permetrics to see the supported objective function.")
         problem = {
-            "fit_func": self.fitness_function,
-            "lb": lb,
-            "ub": ub,
+            "obj_func": self.fitness_function,
+            "bounds": FloatVar(lb=lb, ub=ub),
             "minmax": minmax,
             "log_to": log_to,
             "save_population": save_population,
             "obj_weights": self.obj_weights
         }
-        self.solution, self.best_fit = self.optimizer.solve(problem)
+        g_best = self.optimizer.solve(problem)
+        self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.update_weights_from_solution(self.solution, self.X_temp, self.y_temp)
         self.loss_train = self._get_history_loss(optimizer=self.optimizer)
         return self

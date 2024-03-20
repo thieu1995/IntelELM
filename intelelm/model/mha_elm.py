@@ -98,7 +98,7 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         """
         self.network.update_weights_from_solution(solution, self.X_temp, self.y_temp)
         y_pred = self.network.predict(self.X_temp)
-        loss_train = RegressionMetric(self.y_temp, y_pred, decimal=6).get_metric_by_name(self.obj_name)[self.obj_name]
+        loss_train = RegressionMetric(self.y_temp, y_pred).get_metric_by_name(self.obj_name)[self.obj_name]
         return loss_train
 
     def score(self, X, y, method="RMSE"):
@@ -255,7 +255,7 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         self.network.update_weights_from_solution(solution, self.X_temp, self.y_temp)
         y_pred = self.predict(self.X_temp, return_prob=self.return_prob)
         y1 = self.obj_scaler.inverse_transform(self.y_temp)
-        loss_train = ClassificationMetric(y1, y_pred, decimal=6).get_metric_by_name(self.obj_name)[self.obj_name]
+        loss_train = ClassificationMetric(y1, y_pred).get_metric_by_name(self.obj_name)[self.obj_name]
         return loss_train
 
     def score(self, X, y, method="AS"):
