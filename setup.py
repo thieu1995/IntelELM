@@ -15,7 +15,7 @@ def readme():
 
 setup(
     name="intelelm",
-    version="1.0.3",
+    version="1.1.0",
     author="Thieu",
     author_email="nguyenthieu2102@gmail.com",
     description="IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine",
@@ -70,7 +70,7 @@ setup(
         "Topic :: Utilities",
     ],
     install_requires=["numpy>=1.17.1", "scipy>=1.7.1", "scikit-learn>=1.0.2",
-                      "pandas>=1.3.5", "mealpy>=2.5.4", "permetrics>=1.5.0"],
+                      "pandas>=1.3.5", "mealpy>=3.0.1", "permetrics>=2.0.0"],
     extras_require={
         "dev": ["pytest>=7.0", "pytest-cov==4.0.0", "flake8>=4.0.1"],
     },
