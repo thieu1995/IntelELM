@@ -166,7 +166,7 @@ class ElmClassifier(BaseElm, ClassifierMixin):
                 raise TypeError("Invalid y array shape, it should be 1D vector containing labels 0, 1, 2,.. and so on.")
         else:
             raise TypeError("Invalid y array type, it should be list, tuple or np.ndarray")
-        ohe_scaler = OneHotEncoder(sparse=False)
+        ohe_scaler = OneHotEncoder(sparse_output=False)
         ohe_scaler.fit(np.reshape(y, (-1, 1)))
         obj_scaler = ObjectiveScaler(obj_name="softmax", ohe_scaler=ohe_scaler)
         network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=self.n_labels, act_name=self.act_name)

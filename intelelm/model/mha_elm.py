@@ -233,7 +233,7 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         if self.n_labels > 2:
             if self.obj_name in self.CLS_OBJ_LOSSES:
                 self.return_prob = True
-        ohe_scaler = OneHotEncoder(sparse=False)
+        ohe_scaler = OneHotEncoder(sparse_output=False)
         ohe_scaler.fit(np.reshape(y, (-1, 1)))
         obj_scaler = ObjectiveScaler(obj_name="softmax", ohe_scaler=ohe_scaler)
         network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=self.n_labels, act_name=self.act_name)
