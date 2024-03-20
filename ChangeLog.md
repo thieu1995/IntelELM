@@ -1,6 +1,7 @@
 # Version 1.1.0
 
-+ Update core modules to fit latest version of Mealpy==3.0.1 and PerMetrics=2.0.0
++ Update core modules to fit upgraded version of Mealpy>=3.0.1, PerMetrics>=2.0.0, Scikit-Learn>=1.2.1
++ IntelELM no longer support Python 3.7. Only support Python >= 3.8
 + Update docs and add examples
 
 ---------------------------------------------------------------------
