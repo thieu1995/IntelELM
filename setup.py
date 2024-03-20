@@ -69,7 +69,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Utilities",
     ],
-    install_requires=["numpy>=1.17.1", "scipy>=1.7.1", "scikit-learn>=1.0.2",
+    install_requires=["numpy>=1.17.1", "scipy>=1.7.1", "scikit-learn>=1.2.1",
                       "pandas>=1.3.5", "mealpy>=3.0.1", "permetrics>=2.0.0"],
     extras_require={
         "dev": ["pytest>=7.0", "pytest-cov==4.0.0", "flake8>=4.0.1"],
