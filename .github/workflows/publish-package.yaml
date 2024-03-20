@@ -68,7 +68,7 @@ jobs:
         if: matrix.python-version == 3.11
 
       - name: Upload distribution package
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v2
         with:
           name: dist-package-${{ matrix.python-version }}
           path: dist
@@ -80,7 +80,7 @@ jobs:
     if: github.event_name == 'release'
     steps:
       - name: Download a distribution artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v2
         with:
           name: dist-package-3.11
           path: dist
