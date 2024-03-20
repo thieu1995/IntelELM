@@ -2,9 +2,11 @@
 Installation
 ============
 
-* Install the `current PyPI release <https://pypi.python.org/pypi/intelelm />`_::
+There are so many ways to install our library. For example:
 
-   $ pip install intelelm==1.0.3
+* Install from the `PyPI release <https://pypi.python.org/pypi/intelelm />`_::
+
+   $ pip install intelelm==1.1.0
 
 
 * Install directly from source code::
@@ -18,33 +20,130 @@ Installation
    $ pip install git+https://github.com/thieu1995/intelelm
 
 
-After installation, you can import IntelELM as any other Python module::
+After installation, you can check the version of IntelELM::
 
    $ python
    >>> import intelelm
    >>> intelelm.__version__
 
-========
-Examples
-========
+=========
+Tutorials
+=========
 
-In this section, we will explore the usage of the IntelELM model with the assistance of a dataset. While all the
-preprocessing steps mentioned below can be replicated using Scikit-Learn, we have implemented some utility functions
-to provide users with convenience and faster usage.
+-------------------------
+1) Getting started in 30s
+-------------------------
+
+In the example below, we will apply the traditional ELM model to the diabetes prediction problem. This dataset is already available in our library. The
+process consists of the following steps:
+	* Import libraries
+	* Load and split dataset
+	* Scale dataset
+	* Define the model
+	* Train the model
+	* Test the model
+	* Evaluate the model
+
+.. code-block:: python
+
+	## Import libraries
+	import numpy as np
+	from intelelm import get_dataset, ElmRegressor
+
+	## Load dataset
+	data = get_dataset("diabetes")
+	data.split_train_test(test_size=0.2, random_state=2)
+	print(data.X_train.shape, data.X_test.shape)
+
+	## Scale dataset
+	data.X_train, scaler_X = data.scale(data.X_train, scaling_methods=('minmax', ))
+	data.X_test = scaler_X.transform(data.X_test)
+
+	data.y_train, scaler_y = data.scale(data.y_train, scaling_methods=('minmax', ))
+	data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
+
+	## Define the model
+	model = ElmRegressor(hidden_size=10, act_name="elu")
+
+	## Test the model
+	model.fit(data.X_train, data.y_train)
+
+	## Test the model
+	y_pred = model.predict(data.X_test)
+
+	## Evaluate the model
+	print(model.score(data.X_test, data.y_test, method="RMSE"))
+	print(model.scores(data.X_test, data.y_test, list_methods=("RMSE", "MAPE")))
+	print(model.evaluate(y_true=data.y_test, y_pred=y_pred, list_metrics=("MAPE", "R2", "NSE")))
 
 
-**Combine IntelELM library like a normal library with scikit-learn**::
+As you can see, it is very similar to any other Estimator model in the Scikit-Learn library. They only differ in the model definition part.
+In the provided example, we used the ElmRegressor from the library, which is specifically designed for Extreme Learning Machines. However, the overall
+workflow follows the familiar pattern of loading data, preprocessing, training, and evaluating the model.
+
+
+-------------------
+2) Model Definition
+-------------------
+
+**Metaheuristic Optimization-based ELM model**
+If you want to use the Whale Optimization-based ELM (WO-ELM) model, you can change the model definition like this:
+
+.. code-block:: python
+
+	from intelelm import MhaElmRegressor
+
+	opt_paras = {"name": "WOA", "epoch": 100, "pop_size": 30}
+	model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE",
+			optimizer="OriginalWOA", optimizer_paras=opt_paras, verbose=False)
+
+In the example above, I had to import the MhaElmRegressor class. This is the class that contains all Metaheuristics-based ELM models for regression problems.
+Then, I defined parameters for the Whale Optimization algorithm. And I defined parameters for the Whale Optimization-based ELM model.
+
+
+**What about hybrid model for Classification problem**
+
+In case you want to use the model for a classification problem, you need to import either the ElmClassifier class (this is the traditional ELM model) or the
+MhaElmClassifier class (these are hybrid models combining metaheuristics algorithms and ELM networks).
+
+.. code-block:: python
+
+	from intelelm import ElmClassifier
+
+	model = ElmClassifier(hidden_size=10, act_name="elu")
+
+
+
+.. code-block:: python
+
+	from intelelm import ElmClassifier
+
+	opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
+	model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL",
+			optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False)
+
+
+-------------------
+3) Data Preparation
+-------------------
+
+
+If you want to use your own data, it's straightforward. You won't need to load the data into our Data class. However, you'll need to use the Scikit-Learn
+library to split and scale the data.
+
+
+.. code-block:: python
 
 	### Step 1: Importing the libraries
 	import pandas as pd
 	from sklearn.model_selection import train_test_split
 	from sklearn.preprocessing import MinMaxScaler, LabelEncoder
-	from intelelm import MhaElmRegressor, MhaElmClassifier
+	from intelelm import MhaElmClassifier
 
 	#### Step 2: Reading the dataset
 	dataset = pd.read_csv('Position_Salaries.csv')
-	X = dataset.iloc[:, 1:2].values
-	y = dataset.iloc[:, 2].values
+	X = dataset.iloc[:, 1:2].values         # This is features
+	y = dataset.iloc[:, 2].values           # This is output
 
 	#### Step 3: Next, split dataset into train and test set
 	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=True, random_state=100)
@@ -62,108 +161,72 @@ to provide users with convenience and faster usage.
 
 	#### Step 5: Fitting ELM-based model to the dataset
 
-	##### 5.1: Use standard ELM model for regression problem
-	regressor = ElmRegressor(hidden_size=10, act_name="relu")
-	regressor.fit(X_train, y_train)
-
-	##### 5.2: Use standard ELM model for classification problem
+	##### 5.1: Use standard ELM model for classification problem
 	classifer = ElmClassifier(hidden_size=10, act_name="tanh")
-	classifer.fit(X_train, y_train)
 
-	##### 5.3: Use Metaheuristic-based ELM model for regression problem
-	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
-	print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
-	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-	regressor = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras)
-	regressor.fit(X_train, y_train)
-
-	##### 5.4: Use Metaheuristic-based ELM model for classification problem
+	##### 5.2: Use Metaheuristic-based ELM model for classification problem
 	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 	print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 	classifier = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA", optimizer_paras=opt_paras)
-	classifier.fit(X_train, y_train)
 
-	#### Step 6: Predicting a new result
+	#### Step 6: Traint the model
+	classifer.fit(X_train, y_train)
+
+	#### Step 7: Predicting a new result
 	y_pred = regressor.predict(X_test)
 
 	y_pred_cls = classifier.predict(X_test)
 	y_pred_label = le_y.inverse_transform(y_pred_cls)
 
-	#### Step 7: Calculate metrics using score or scores functions.
+	#### Step 8: Calculate metrics using score or scores functions.
 	print("Try my AS metric with score function")
 	print(regressor.score(data.X_test, data.y_test, method="AS"))
 
 	print("Try my multiple metrics with scores function")
 	print(classifier.scores(data.X_test, data.y_test, list_methods=["AS", "PS", "F1S", "CEL", "BSL"]))
-
-
-**Utilities everything that IntelELM provided**::
-
-	### Step 1: Importing the libraries
-	from intelelm import ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier, get_dataset
-
-	#### Step 2: Reading the dataset
-	data = get_dataset("aniso")
-
-	#### Step 3: Next, split dataset into train and test set
-	data.split_train_test(test_size=0.2, shuffle=True, random_state=100)
-
-	#### Step 4: Feature Scaling
-	data.X_train, scaler_X = data.scale(data.X_train, scaling_methods="standard")
-	data.X_test = scaler_X.transform(data.X_test)
-
-	data.y_train, scaler_y = data.encode_label(data.y_train)   # This is for classification problem only
-	data.y_test = scaler_y.transform(data.y_test)
-
-	#### Step 5: Fitting ELM-based model to the dataset
-
-	##### 5.1: Use standard ELM model for regression problem
-	regressor = ElmRegressor(hidden_size=10, act_name="relu")
-	regressor.fit(data.X_train, data.y_train)
-
-	##### 5.2: Use standard ELM model for classification problem
-	classifer = ElmClassifier(hidden_size=10, act_name="tanh")
-	classifer.fit(data.X_train, data.y_train)
-
-	##### 5.3: Use Metaheuristic-based ELM model for regression problem
-	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
-	print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
-	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-	regressor = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras)
-	regressor.fit(data.X_train, data.y_train)
-
-	##### 5.4: Use Metaheuristic-based ELM model for classification problem
-	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
-	print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
-	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-	classifier = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA", optimizer_paras=opt_paras)
-	classifier.fit(data.X_train, data.y_train)
-
-	#### Step 6: Predicting a new result
-	y_pred = regressor.predict(data.X_test)
-
-	y_pred_cls = classifier.predict(data.X_test)
-	y_pred_label = scaler_y.inverse_transform(y_pred_cls)
-
-	#### Step 7: Calculate metrics using score or scores functions.
-	print("Try my AS metric with score function")
-	print(regressor.score(data.X_test, data.y_test, method="AS"))
-
-	print("Try my multiple metrics with scores function")
-	print(classifier.scores(data.X_test, data.y_test, list_methods=["AS", "PS", "F1S", "CEL", "BSL"]))
-
-	print("Try my evaluate functions")
-	print(regressor.evaluate(data.y_test, y_pred, list_metrics=("RMSE", "MAE", "MAPE", "NSE", "R2")))
-
-	#### Save results
-	regressor.save_loss_train(save_path="history", filename="loss_train.csv")
-	regressor.save_metrics(data.y_test, y_pred, list_metrics=("R2", "MAPE", "MAE", "MSE"), save_path="history", filename="metrics.csv")
 
 
 A real-world dataset contains features that vary in magnitudes, units, and range. We would suggest performing
 normalization when the scale of a feature is irrelevant or misleading. Feature Scaling basically helps to normalize
 the data within a particular range.
+
+
+---------------------------
+4) Scikit-Learn Integration
+---------------------------
+
+There's no need to delve further into this issue. The classes in the IntelELM library inherit from the BaseEstimator class from the Scikit-Learn library.
+Therefore, the features provided by the Scikit-Learn library can be utilized by the classes in the IntelELM library.
+
+
+In the example below, we use the Whale Optimization-based ELM model as the base model for the recursive feature selection method for feature selection problem.
+
+.. code-block:: python
+
+	# import necessary class, modules, and functions
+	from intelelm import Data, MhaElmRegressor
+	from sklearn.feature_selection import RFE
+
+	# load X features and y label from file
+	X, y = load_my_data() # Assumption that this is loading data function
+
+	# create data object
+	data = Data(X, y)
+
+	# create model and selector
+	opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
+	model = MhaElmRegressor(hidden_size=10, act_name="relu", obj_name="MSE",
+			optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False)
+
+	selector = RFE(estimator=model)
+	selector.fit(X_train, y_train)
+
+	# get the final dataset
+	data.X_train = data.X_train[selector.support_]
+	data.X_test = data.X_test[selector.support_]
+	print(f'Ranking of features from Recursive FS: {selector.ranking_}')
+
 
 .. toctree::
    :maxdepth: 4
