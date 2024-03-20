@@ -1,3 +1,9 @@
+# Version 1.1.0
+
++ Update core modules to fit latest version of Mealpy==3.0.1 and PerMetrics=2.0.0
++ Update docs and add examples
+
+---------------------------------------------------------------------
 
 # Version 1.0.3
 
