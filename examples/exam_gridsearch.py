@@ -33,7 +33,8 @@ X_train, X_test, y_train, y_test = train_test_split(df_feat, np.ravel(df_target)
 # train the model on train set
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
-model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False)
+model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL", optimizer="BaseGA",
+                         optimizer_paras=opt_paras, verbose=False, seed=42)
 model.fit(X_train, y_train)
 pred = model.predict(X_test)
 print(model.evaluate(y_test, pred, list_metrics=["AS", "PS", "RS", "F1S"]))

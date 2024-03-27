@@ -19,7 +19,8 @@ data.y_train, scaler_y = data.scale(data.y_train, scaling_methods=('minmax', ))
 data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
 opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE", optimizer="BaseGA", optimizer_paras=opt_paras)
+model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE", optimizer="BaseGA",
+                        optimizer_paras=opt_paras, seed=42)
 model.fit(data.X_train, data.y_train)
 
 y_pred = model.predict(data.X_test)

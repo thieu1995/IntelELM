@@ -30,7 +30,8 @@ print(cm.get_metrics_by_list_names(["AS", "RS", "PS", "F1S"]))
 ###################################################################################################
 
 opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False)
+model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL", optimizer="BaseGA",
+                         optimizer_paras=opt_paras, verbose=False, seed=42)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 cm = ClassificationMetric(y_test, y_pred)

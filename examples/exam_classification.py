@@ -22,7 +22,8 @@ def try_random_dataset():
     data.split_train_test(test_size=0.2, random_state=2)
 
     opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-    model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=True)
+    model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA",
+                             optimizer_paras=opt_paras, verbose=True, seed=42)
     model.fit(data.X_train, data.y_train)
     y_pred = model.predict(data.X_test)
     print(model.evaluate(data.y_test, y_pred, list_metrics=("AS", "PS", "F1S")))
@@ -36,7 +37,8 @@ def try_intelelm_binary_dataset():
     print(data.X_train.shape, data.X_test.shape)
 
     opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-    model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=True)
+    model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL", optimizer="BaseGA",
+                             optimizer_paras=opt_paras, verbose=True, seed=42)
     model.fit(data.X_train, data.y_train)
 
     print(model.score(data.X_test, data.y_test, method="AS"))
@@ -49,7 +51,8 @@ def try_intelelm_multi_class_dataset():
     print(data.X_train.shape, data.X_test.shape)
 
     opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-    model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=True)
+    model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA",
+                             optimizer_paras=opt_paras, verbose=True, seed=42)
     model.fit(data.X_train, data.y_train)
 
     y_pred = model.predict(data.X_test)

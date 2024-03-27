@@ -8,9 +8,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error
-import matplotlib.pyplot as plt
-
-np.random.seed(21)
 
 
 def make_data(n_samples=1000):
@@ -18,6 +15,7 @@ def make_data(n_samples=1000):
     r = [a/10 for a in x]
     y = np.sin(x) + np.random.uniform(-0.5, 0.2, len(x)) + np.array(r)
     return x, y
+
 
 X, y = make_data(1000)
 X = np.reshape(X, (-1, 1))
@@ -41,7 +39,8 @@ from intelelm import Data, MhaElmRegressor
 
 data = Data().set_train_test(X_train, y_train, X_test, y_test)
 opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False)
+model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE", optimizer="BaseGA",
+                        optimizer_paras=opt_paras, verbose=False, seed=42)
 model.fit(data.X_train, data.y_train)
 
 pred = model.predict(data.X_test)
