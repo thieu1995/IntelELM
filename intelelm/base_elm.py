@@ -35,8 +35,13 @@ class ELM:
         "hard_sigmoid", "log_sigmoid", "silu", "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink",
         "soft_shrink", "hard_shrink", "softmin", "softmax", "log_softmax" }, default='sigmoid'
         Activation function for the hidden layer.
+
+    seed: int, default=None
+        Determines random number generation for weights and bias initialization.
+        Pass an int for reproducible results across multiple function calls.
     """
-    def __init__(self, size_input=5, size_hidden=10, size_output=1, act_name='sigmoid'):
+    def __init__(self, size_input=5, size_hidden=10, size_output=1, act_name='sigmoid', seed=None):
+        self.generator = np.random.default_rng(seed)
         self.input_nodes = size_input
         self.hidden_nodes = size_hidden
         self.output_nodes = size_output
@@ -46,9 +51,9 @@ class ELM:
         self.act_name = act_name
         self.act_func = getattr(activation, self.act_name)
         self.weights = {
-            "w1": np.random.rand(self.input_nodes, self.hidden_nodes),
-            "b": np.random.rand(self.hidden_nodes),
-            "w2": np.random.rand(self.hidden_nodes, self.output_nodes)
+            "w1": self.generator.random((self.input_nodes, self.hidden_nodes)),
+            "b": self.generator.random(self.hidden_nodes),
+            "w2": self.generator.random((self.hidden_nodes, self.output_nodes))
         }
 
     def fit(self, X, y):
