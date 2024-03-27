@@ -378,18 +378,23 @@ class BaseMhaElm(BaseElm):
 
     verbose : bool, default=True
         Whether to print progress messages to stdout.
+
+    seed: int, default=None
+        Determines random number generation for weights and bias initialization.
+        Pass an int for reproducible results across multiple function calls.
     """
 
     SUPPORTED_OPTIMIZERS = list(get_all_optimizers().keys())
     SUPPORTED_CLS_OBJECTIVES = get_all_classification_metrics()
     SUPPORTED_REG_OBJECTIVES = get_all_regression_metrics()
 
-    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=True):
+    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=True, seed=None):
         super().__init__(hidden_size=hidden_size, act_name=act_name)
         self.obj_name = obj_name
         self.optimizer_paras = optimizer_paras
         self.optimizer = self._set_optimizer(optimizer, optimizer_paras)
         self.verbose = verbose
+        self.seed = seed
         self.network, self.obj_scaler = None, None
         self.obj_weights = None
 
@@ -417,7 +422,7 @@ class BaseMhaElm(BaseElm):
     def fitness_function(self, solution=None):
         pass
 
-    def fit(self, X, y, lb=(-10.0, ), ub=(10.0, ), mode="single", n_workers=None, termination=None, save_population=False, seed=None):
+    def fit(self, X, y, lb=(-10.0, ), ub=(10.0, ), mode="single", n_workers=None, termination=None, save_population=False):
         """
         Parameters
         ----------
@@ -435,7 +440,6 @@ class BaseMhaElm(BaseElm):
         n_workers: The number of workers (cores or threads) to do the tasks (effect only on parallel mode)
         termination: The termination dictionary or an instance of Termination class in Mealpy library
         save_population : Save the population of search agents (Don't set it to True when you don't know how to use it)
-        seed: seed for random number generation needed to be *explicitly* set to int value or leave it None as default
         """
         self.network, self.obj_scaler = self.create_network(X, y)
         y_scaled = self.obj_scaler.transform(y)
@@ -473,7 +477,7 @@ class BaseMhaElm(BaseElm):
             "save_population": save_population,
             "obj_weights": self.obj_weights
         }
-        g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=seed)
+        g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=self.seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.update_weights_from_solution(self.solution, self.X_temp, self.y_temp)
         self.loss_train = self._get_history_loss(optimizer=self.optimizer)

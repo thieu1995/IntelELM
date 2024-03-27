@@ -42,6 +42,10 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
     verbose : bool, default=False
         Whether to print progress messages to stdout.
 
+    seed: int, default=None
+        Determines random number generation for weights and bias initialization.
+        Pass an int for reproducible results across multiple function calls.
+
     Examples
     --------
     >>> from intelelm import MhaElmRegressor, Data
@@ -56,8 +60,10 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
     >>> print(pred)
     """
 
-    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=False, obj_weights=None):
-        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name, optimizer=optimizer, optimizer_paras=optimizer_paras, verbose=verbose)
+    def __init__(self, hidden_size=10, act_name="elu", obj_name=None,
+                 optimizer="BaseGA", optimizer_paras=None, verbose=False, seed=None, obj_weights=None):
+        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name,
+                         optimizer=optimizer, optimizer_paras=optimizer_paras, verbose=verbose, seed=seed)
         self.obj_weights = obj_weights
 
     def create_network(self, X, y):
@@ -80,7 +86,7 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
             else:
                 raise TypeError("Invalid obj_weights array type, it should be list, tuple or np.ndarray")
         obj_scaler = ObjectiveScaler(obj_name="self", ohe_scaler=None)
-        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=size_output, act_name=self.act_name)
+        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=size_output, act_name=self.act_name, seed=self.seed)
         return network, obj_scaler
 
     def fitness_function(self, solution=None):
@@ -197,6 +203,10 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
     verbose : bool, default=False
         Whether to print progress messages to stdout.
 
+    seed: int, default=None
+        Determines random number generation for weights and bias initialization.
+        Pass an int for reproducible results across multiple function calls.
+
     Examples
     --------
     >>> from intelelm import Data, MhaElmClassifier
@@ -216,8 +226,9 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
 
     CLS_OBJ_LOSSES = ["CEL", "HL", "KLDL", "BSL"]
 
-    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=False):
-        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name, optimizer=optimizer, optimizer_paras=optimizer_paras, verbose=verbose)
+    def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=False, seed=None):
+        super().__init__(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name,
+                         optimizer=optimizer, optimizer_paras=optimizer_paras, verbose=verbose, seed=seed)
         self.return_prob = False
 
     def _check_y(self, y):
@@ -236,7 +247,7 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         ohe_scaler = OneHotEncoder(sparse_output=False)
         ohe_scaler.fit(np.reshape(y, (-1, 1)))
         obj_scaler = ObjectiveScaler(obj_name="softmax", ohe_scaler=ohe_scaler)
-        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=self.n_labels, act_name=self.act_name)
+        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=self.n_labels, act_name=self.act_name, seed=self.seed)
         return network, obj_scaler
 
     def fitness_function(self, solution=None):
