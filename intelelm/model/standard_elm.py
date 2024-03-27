@@ -25,6 +25,10 @@ class ElmRegressor(BaseElm, RegressorMixin):
         "soft_shrink", "hard_shrink", "softmin", "softmax", "log_softmax" }, default='sigmoid'
         Activation function for the hidden layer.
 
+    seed: int, default=None
+        Determines random number generation for weights and bias initialization.
+        Pass an int for reproducible results across multiple function calls.
+
     Examples
     --------
     >>> from intelelm import ElmRegressor, Data
@@ -38,8 +42,9 @@ class ElmRegressor(BaseElm, RegressorMixin):
     >>> print(pred)
     """
 
-    def __init__(self, hidden_size=10, act_name="elu"):
+    def __init__(self, hidden_size=10, act_name="elu", seed=None):
         super().__init__(hidden_size=hidden_size, act_name=act_name)
+        self.seed = seed
 
     def create_network(self, X, y):
         if type(y) in (list, tuple, np.ndarray):
@@ -53,7 +58,7 @@ class ElmRegressor(BaseElm, RegressorMixin):
         else:
             raise TypeError("Invalid y array type, it should be list, tuple or np.ndarray")
         obj_scaler = ObjectiveScaler(obj_name="self", ohe_scaler=None)
-        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=size_output, act_name=self.act_name)
+        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=size_output, act_name=self.act_name, seed=self.seed)
         return network, obj_scaler
 
     def score(self, X, y, method="RMSE"):
@@ -136,6 +141,10 @@ class ElmClassifier(BaseElm, ClassifierMixin):
         "soft_shrink", "hard_shrink", "softmin", "softmax", "log_softmax" }, default='sigmoid'
         Activation function for the hidden layer.
 
+    seed: int, default=None
+        Determines random number generation for weights and bias initialization.
+        Pass an int for reproducible results across multiple function calls.
+
     Examples
     --------
     >>> from intelelm import Data, ElmClassifier
@@ -152,10 +161,11 @@ class ElmClassifier(BaseElm, ClassifierMixin):
 
     CLS_OBJ_LOSSES = ["CEL", "HL", "KLDL", "BSL"]
 
-    def __init__(self, hidden_size=10, act_name="elu"):
+    def __init__(self, hidden_size=10, act_name="elu", seed=None):
         super().__init__(hidden_size=hidden_size, act_name=act_name)
         self.return_prob = False
-        self.n_labels = None 
+        self.n_labels = None
+        self.seed = seed
 
     def create_network(self, X, y):
         if type(y) in (list, tuple, np.ndarray):
@@ -169,7 +179,7 @@ class ElmClassifier(BaseElm, ClassifierMixin):
         ohe_scaler = OneHotEncoder(sparse_output=False)
         ohe_scaler.fit(np.reshape(y, (-1, 1)))
         obj_scaler = ObjectiveScaler(obj_name="softmax", ohe_scaler=ohe_scaler)
-        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=self.n_labels, act_name=self.act_name)
+        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=self.n_labels, act_name=self.act_name, seed=self.seed)
         return network, obj_scaler
 
     def score(self, X, y, method="AS"):
