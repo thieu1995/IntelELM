@@ -412,7 +412,7 @@ class BaseMhaElm(BaseElm):
     def fitness_function(self, solution=None):
         pass
 
-    def fit(self, X, y, lb=(-10.0, ), ub=(10.0, ), save_population=False):
+    def fit(self, X, y, lb=(-10.0, ), ub=(10.0, ), mode="single", n_workers=None, termination=None, save_population=False, seed=None):
         """
         Parameters
         ----------
@@ -420,7 +420,17 @@ class BaseMhaElm(BaseElm):
         y : The ground truth data
         lb : The lower bound for decision variables in optimization problem (The weights and biases of network)
         ub : The upper bound for decision variables in optimization problem (The weights and biases of network)
+        mode: Parallel: 'process', 'thread'; Sequential: 'swarm', 'single'.
+
+                * 'process': The parallel mode with multiple cores run the tasks
+                * 'thread': The parallel mode with multiple threads run the tasks
+                * 'swarm': The sequential mode that no effect on updating phase of other agents
+                * 'single': The sequential mode that effect on updating phase of other agents, this is default mode
+
+        n_workers: The number of workers (cores or threads) to do the tasks (effect only on parallel mode)
+        termination: The termination dictionary or an instance of Termination class in Mealpy library
         save_population : Save the population of search agents (Don't set it to True when you don't know how to use it)
+        seed: seed for random number generation needed to be *explicitly* set to int value or leave it None as default
         """
         self.network, self.obj_scaler = self.create_network(X, y)
         y_scaled = self.obj_scaler.transform(y)
@@ -458,7 +468,7 @@ class BaseMhaElm(BaseElm):
             "save_population": save_population,
             "obj_weights": self.obj_weights
         }
-        g_best = self.optimizer.solve(problem)
+        g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.update_weights_from_solution(self.solution, self.X_temp, self.y_temp)
         self.loss_train = self._get_history_loss(optimizer=self.optimizer)
