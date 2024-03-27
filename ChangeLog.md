@@ -1,3 +1,15 @@
+# Version 1.1.1
+
++ Update seed value in all 4 classes to ensure reproducibility of your results
++ Add mode, n_workers, and termination parameter in model.fit() of MhaElmRegressor and MhaElmClassifier classes
+  + These parameters are derived from Mealpy library
+  + With mode parameter, you can speed your training model
+  + With n_workers, you can set the number of threads or CPUs to speed up the training process
+  + With termination, you can set early stopping strategy for your model.
++ Update docs, examples, and tests.
+
+---------------------------------------------------------------------
+
 # Version 1.1.0
 
 + Update core modules to fit upgraded version of Mealpy>=3.0.1, PerMetrics>=2.0.0, Scikit-Learn>=1.2.1
