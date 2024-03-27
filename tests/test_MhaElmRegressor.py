@@ -7,8 +7,6 @@
 import numpy as np
 from intelelm import MhaElmRegressor
 
-np.random.seed(42)
-
 
 def test_MhaElmRegressor_class():
     X = np.random.uniform(low=0.0, high=1.0, size=(100, 5))
@@ -16,7 +14,8 @@ def test_MhaElmRegressor_class():
     y = 2 * X + 1 + noise
 
     opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-    model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False)
+    model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", optimizer="BaseGA",
+                            optimizer_paras=opt_paras, verbose=False, seed=42)
     model.fit(X, y)
 
     pred = model.predict(X)
