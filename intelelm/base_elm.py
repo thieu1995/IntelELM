@@ -391,12 +391,27 @@ class BaseMhaElm(BaseElm):
     def __init__(self, hidden_size=10, act_name="elu", obj_name=None, optimizer="BaseGA", optimizer_paras=None, verbose=True, seed=None):
         super().__init__(hidden_size=hidden_size, act_name=act_name)
         self.obj_name = obj_name
+        if optimizer_paras is None:
+            optimizer_paras = {"epoch": 500, "pop_size": 30}
         self.optimizer_paras = optimizer_paras
-        self.optimizer = self._set_optimizer(optimizer, optimizer_paras)
+        self.optimizer = optimizer
         self.verbose = verbose
         self.seed = seed
         self.network, self.obj_scaler = None, None
         self.obj_weights = None
+
+    def set_params(self, **params):
+        # Handle nested parameters for the optimizer
+        optimizer_params = {k.split('__')[1]: v for k, v in params.items() if k.startswith('optimizer_paras__')}
+
+        if optimizer_params:
+            self.optimizer_paras.update(optimizer_params)
+
+        # Pass non-optimizer parameters to the parent class set_params
+        super_params = {k: v for k, v in params.items() if not k.startswith('optimizer_paras__')}
+        super().set_params(**super_params)
+
+        return self
 
     def _set_optimizer(self, optimizer=None, optimizer_paras=None):
         if type(optimizer) is str:
@@ -404,7 +419,7 @@ class BaseMhaElm(BaseElm):
             if type(optimizer_paras) is dict:
                 return opt_class(**optimizer_paras)
             else:
-                return opt_class(epoch=500, pop_size=50)
+                raise TypeError(f"optimizer_paras is a dictionary contains the hyper-parameter of optimizer in Mealpy library.")
         elif isinstance(optimizer, Optimizer):
             if type(optimizer_paras) is dict:
                 return optimizer.set_parameters(optimizer_paras)
@@ -477,6 +492,7 @@ class BaseMhaElm(BaseElm):
             "save_population": save_population,
             "obj_weights": self.obj_weights
         }
+        self.optimizer = self._set_optimizer(self.optimizer, self.optimizer_paras)
         g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=self.seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.update_weights_from_solution(self.solution, self.X_temp, self.y_temp)

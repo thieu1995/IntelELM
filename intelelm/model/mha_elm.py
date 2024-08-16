@@ -235,12 +235,12 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         if type(y) in (list, tuple, np.ndarray):
             y = np.squeeze(np.asarray(y))
             if y.ndim == 1:
-                return len(np.unique(y))
+                return len(np.unique(y)), np.unique(y)
             raise TypeError("Invalid y array shape, it should be 1D vector containing labels 0, 1, 2,.. and so on.")
         raise TypeError("Invalid y array type, it should be list, tuple or np.ndarray")
 
     def create_network(self, X, y):
-        self.n_labels = self._check_y(y)
+        self.n_labels, self.classes_ = self._check_y(y)
         if self.n_labels > 2:
             if self.obj_name in self.CLS_OBJ_LOSSES:
                 self.return_prob = True
