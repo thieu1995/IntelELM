@@ -9,7 +9,7 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from intelelm import MhaElmRegressor, MhaElmClassifier
 
 
-class MhaElmRegressorTuner:
+class MhaElmTuner:
 
     def __init__(self, task="classification", param_dict=None, search_method="gridsearch", **kwargs):
         """
@@ -88,6 +88,6 @@ class MhaElmRegressorTuner:
             array-like: Predicted values.
         """
         if self.best_estimator_ is None:
-            raise NotFittedError("This MhaElmRegressorTuner instance is not fitted yet. Call 'fit' before using this estimator.")
+            raise NotFittedError("This MhaElmTuner instance is not fitted yet. Call 'fit' before using this estimator.")
 
         return self.best_estimator_.predict(X)
