@@ -413,17 +413,23 @@ class BaseMhaElm(BaseElm):
 
         return self
 
-    def _set_optimizer(self, optimizer=None, optimizer_paras=None):
+    def set_optimizer(self, optimizer):
+        self.optimizer = optimizer
+
+    def set_optimizer_paras(self, optimizer_paras):
+        self.optimizer_paras = optimizer_paras
+
+    def __set_optimizer(self, optimizer=None, optimizer_paras=None):
         if type(optimizer) is str:
             opt_class = get_optimizer_by_name(optimizer)
             if type(optimizer_paras) is dict:
-                return opt_class(**optimizer_paras)
+                self.optimizer = opt_class(**optimizer_paras)
             else:
                 raise TypeError(f"optimizer_paras is a dictionary contains the hyper-parameter of optimizer in Mealpy library.")
         elif isinstance(optimizer, Optimizer):
             if type(optimizer_paras) is dict:
-                return optimizer.set_parameters(optimizer_paras)
-            return optimizer
+                optimizer.set_parameters(optimizer_paras)
+            self.optimizer = optimizer
         else:
             raise TypeError(f"optimizer needs to set as a string and supported by Mealpy library.")
 
@@ -492,7 +498,7 @@ class BaseMhaElm(BaseElm):
             "save_population": save_population,
             "obj_weights": self.obj_weights
         }
-        self.optimizer = self._set_optimizer(self.optimizer, self.optimizer_paras)
+        self.__set_optimizer(self.optimizer, self.optimizer_paras)
         g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=self.seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.update_weights_from_solution(self.solution, self.X_temp, self.y_temp)
