@@ -5,7 +5,7 @@
 # --------------------------------------------------%
 
 import numpy as np
-from intelelm import get_dataset, MhaElmTuner
+from intelelm import get_dataset, AutomatedMhaElmTuner
 
 
 data = get_dataset("blobs")
@@ -28,7 +28,7 @@ param_dict = {
 }
 
 # Initialize the tuner
-tuner = MhaElmTuner(
+tuner = AutomatedMhaElmTuner(
     task="classification",
     param_dict=param_dict,
     search_method="randomsearch",  # or "randomsearch"
