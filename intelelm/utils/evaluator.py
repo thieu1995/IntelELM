@@ -122,6 +122,10 @@ def get_metric_sklearn(task="classification", metric_names=None):
         else:
             continue
         # Convert the method to a scorer using make_scorer
-        scorers[metric_name] = make_scorer(metric_method)
+        if met.SUPPORT[metric_name]["type"] == "min":
+            greater_is_better = False
+        else:
+            greater_is_better = True
+        scorers[metric_name] = make_scorer(metric_method, greater_is_better=greater_is_better)
     # Now, you can use this scorers dictionary
     return scorers
