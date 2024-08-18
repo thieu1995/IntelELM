@@ -172,6 +172,25 @@ class SinhArcSinhScaler(BaseEstimator, TransformerMixin):
 
 
 class DataTransformer(BaseEstimator, TransformerMixin):
+    """
+    Applies a sequence of scaling transformations to data.
+
+    This transformer enables applying multiple scaling techniques sequentially.
+    It supports a variety of scaling methods, including standardization, normalization,
+    logarithmic transformations, and more.
+
+    Args:
+        scaling_methods (str, tuple, list, or np.ndarray): The names of scaling methods to apply.
+        list_dict_paras (list of dict, optional): A list of dictionaries containing parameters for each scaling method.
+
+    Attributes:
+        scalers (list): A list of scaler instances.
+
+    Methods:
+        fit(X, y=None): Fits the scaler instances to the input data.
+        transform(X): Applies the scaling transformations to the input data.
+        inverse_transform(X): Applies the inverse scaling transformations to the input data.
+    """
 
     SUPPORTED_SCALERS = {"standard": StandardScaler, "minmax": MinMaxScaler, "max-abs": MaxAbsScaler,
                          "log1p": Log1pScaler, "loge": LogeScaler, "sqrt": SqrtScaler,
