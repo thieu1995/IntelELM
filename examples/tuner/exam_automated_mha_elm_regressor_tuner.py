@@ -35,9 +35,11 @@ tuner = AutomatedMhaElmTuner(
     task="regression",
     param_dict=param_dict,
     search_method="randomsearch",  # or "randomsearch"
-    cv=3,  # Example additional argument
-    scoring='r2',  # Example additional argument
-    verbose=2
+    scoring='r2',
+    cv=3,
+    verbose=2,          # Example additional argument
+    random_state=42,    # Additional parameter for RandomizedSearchCV
+    n_jobs=4            # Parallelization
 )
 
 # Perform tuning

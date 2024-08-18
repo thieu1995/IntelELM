@@ -4,7 +4,6 @@
 #       Github: https://github.com/thieu1995        %                         
 # --------------------------------------------------%
 
-import numpy as np
 from intelelm import get_dataset, AutomatedMhaElmTuner
 
 
@@ -32,9 +31,11 @@ tuner = AutomatedMhaElmTuner(
     task="classification",
     param_dict=param_dict,
     search_method="randomsearch",  # or "randomsearch"
-    cv=3,  # Example additional argument
-    scoring='accuracy',  # Example additional argument
-    verbose=2
+    scoring='accuracy',
+    cv=3,
+    verbose=2,          # Example additional argument
+    random_state=42,    # Additional parameter for RandomizedSearchCV
+    n_jobs=4            # Parallelization
 )
 
 # Perform tuning

@@ -7,11 +7,31 @@
 from sklearn.exceptions import NotFittedError
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from intelelm import MhaElmRegressor, MhaElmClassifier
+from intelelm.utils.evaluator import get_metric_sklearn
 
 
 class AutomatedMhaElmTuner:
+    """
+    Automated hyperparameter tuner for MhaElm models.
 
-    def __init__(self, task="classification", param_dict=None, search_method="gridsearch", **kwargs):
+    Performs hyperparameter tuning for MhaElm models using either GridSearchCV or RandomizedSearchCV.
+    Provides an interface for fitting and predicting using the best found model.
+
+    Attributes:
+        model_class (class): The MhaElm model class (MhaElmRegressor or MhaElmClassifier).
+        param_grid (dict): The parameter grid for hyperparameter tuning.
+        search_method (str): The optimization method ('gridsearch' or 'randomsearch').
+        kwargs (dict): Additional keyword arguments for the search method.
+        searcher (GridSearchCV or RandomizedSearchCV): The searcher
+        best_estimator_ (sklearn.base.BaseEstimator): The best estimator found during tuning.
+        best_params_ (dict): The best hyperparameters found during tuning.
+
+    Methods:
+        fit(X, y): Fits the tuner to the data and tunes hyperparameters.
+        predict(X): Predicts using the best estimator.
+    """
+
+    def __init__(self, task="classification", param_dict=None, search_method="gridsearch", scoring=None, cv=3, **kwargs):
         """
         Initializes the tuner
 
@@ -21,41 +41,41 @@ class AutomatedMhaElmTuner:
             optimization_method (str): The method for tuning (e.g., 'gridsearch', 'randomsearch').
             **kwargs: Additional arguments for tuning methods like cv, n_iter, etc.
         """
-        if task == "classification":
-            self.model_class = MhaElmClassifier
-        else:
-            self.model_class = MhaElmRegressor
+        self.task = task
+        if task not in ("classification", "regression"):
+            raise ValueError(f"Invalid task type: {task}. Supported tasks are 'classification' and 'regression'.")
+        self.model_class = MhaElmClassifier if task == "classification" else MhaElmRegressor
         self.param_dict = param_dict
-        self.search_method = search_method
+        self.search_method = search_method.lower()
+        self.scoring = scoring
+        self.cv = cv
         self.kwargs = kwargs
+        self.searcher = None
         self.best_estimator_ = None
         self.best_params_ = None
 
-    def _grid_search(self, X, y):
+    def _get_search_object(self):
         """
-        Performs GridSearchCV to tune hyperparameters.
+        Returns an instance of GridSearchCV or RandomizedSearchCV based on the chosen search method.
 
-        Args:
-            X (array-like): Training features.
-            y (array-like): Training target values.
+        Raises:
+            ValueError: If an unsupported search method is specified or if a parameter grid is missing for RandomizedSearchCV.
         """
-        grid_search = GridSearchCV(estimator=self.model_class(), param_grid=self.param_dict, **self.kwargs)
-        grid_search.fit(X, y)
-        self.best_estimator_ = grid_search.best_estimator_
-        self.best_params_ = grid_search.best_params_
-
-    def _random_search(self, X, y):
-        """
-        Performs RandomizedSearchCV to tune hyperparameters.
-
-        Args:
-            X (array-like): Training features.
-            y (array-like): Training target values.
-        """
-        random_search = RandomizedSearchCV(estimator=self.model_class(), param_distributions=self.param_dict, **self.kwargs)
-        random_search.fit(X, y)
-        self.best_estimator_ = random_search.best_estimator_
-        self.best_params_ = random_search.best_params_
+        if not self.param_dict:
+            raise ValueError("Searching hyper-parameter requires a param_dict as a dictionary.")
+        if not self.scoring:
+            raise ValueError("Searching hyper-parameter requires a scoring method.")
+        metrics = get_metric_sklearn(task=self.task, metric_names=[self.scoring])
+        if len(metrics) == 1:
+            self.scoring = metrics[self.scoring]
+        if self.search_method == "gridsearch":
+            return GridSearchCV(estimator=self.model_class(), param_grid=self.param_dict,
+                                scoring=self.scoring, cv=self.cv, **self.kwargs)
+        elif self.search_method == "randomsearch":
+            return RandomizedSearchCV(estimator=self.model_class(), param_distributions=self.param_dict,
+                                      scoring=self.scoring, cv=self.cv, **self.kwargs)
+        else:
+            raise ValueError(f"Unsupported searching method: {self.search_method}")
 
     def fit(self, X, y):
         """
@@ -68,13 +88,10 @@ class AutomatedMhaElmTuner:
         Returns:
             self: Fitted tuner object.
         """
-        if self.search_method == "gridsearch":
-            self._grid_search(X, y)
-        elif self.search_method == "randomsearch":
-            self._random_search(X, y)
-        else:
-            raise ValueError(f"Unsupported optimization method: {self.search_method}")
-
+        self.searcher = self._get_search_object()
+        self.searcher.fit(X, y)
+        self.best_estimator_ = self.searcher.best_estimator_
+        self.best_params_ = self.searcher.best_params_
         return self
 
     def predict(self, X):
