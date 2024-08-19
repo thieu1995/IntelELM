@@ -11,3 +11,4 @@ from intelelm.utils.data_loader import Data, get_dataset
 from intelelm.model.mha_elm import MhaElmRegressor, MhaElmClassifier
 from intelelm.model.standard_elm import ElmRegressor, ElmClassifier
 from intelelm.model.automated_tuner import AutomatedMhaElmTuner
+from intelelm.model.automated_comparator import AutomatedMhaElmComparator
