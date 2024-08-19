@@ -392,13 +392,18 @@ class BaseMhaElm(BaseElm):
         super().__init__(hidden_size=hidden_size, act_name=act_name)
         self.obj_name = obj_name
         if optimizer_paras is None:
-            optimizer_paras = {"epoch": 500, "pop_size": 30}
+            optimizer_paras = {"epoch": 500, "pop_size": 20}
         self.optimizer_paras = optimizer_paras
         self.optimizer = optimizer
         self.verbose = verbose
         self.seed = seed
         self.network, self.obj_scaler = None, None
         self.obj_weights = None
+
+    def get_name(self):
+        if type(self.optimizer) is str:
+            return f"{self.optimizer_paras}-ELM"
+        return f"{self.optimizer.name}-ELM"
 
     def set_params(self, **params):
         # Handle nested parameters for the optimizer
@@ -419,19 +424,24 @@ class BaseMhaElm(BaseElm):
     def set_optimizer_paras(self, optimizer_paras):
         self.optimizer_paras = optimizer_paras
 
-    def __set_optimizer(self, optimizer=None, optimizer_paras=None):
+    def set_optimizer_object(self, optimizer=None, optimizer_paras=None):
         if type(optimizer) is str:
             opt_class = get_optimizer_by_name(optimizer)
             if type(optimizer_paras) is dict:
+                self.optimizer_paras = optimizer_paras
                 self.optimizer = opt_class(**optimizer_paras)
             else:
                 raise TypeError(f"optimizer_paras is a dictionary contains the hyper-parameter of optimizer in Mealpy library.")
         elif isinstance(optimizer, Optimizer):
             if type(optimizer_paras) is dict:
+                self.optimizer_paras = optimizer_paras
                 optimizer.set_parameters(optimizer_paras)
             self.optimizer = optimizer
         else:
             raise TypeError(f"optimizer needs to set as a string and supported by Mealpy library.")
+
+    def set_seed(self, seed):
+        self.seed = seed
 
     def _get_history_loss(self, optimizer=None):
         list_global_best = optimizer.history.list_global_best
@@ -498,7 +508,7 @@ class BaseMhaElm(BaseElm):
             "save_population": save_population,
             "obj_weights": self.obj_weights
         }
-        self.__set_optimizer(self.optimizer, self.optimizer_paras)
+        self.set_optimizer_object(self.optimizer, self.optimizer_paras)
         g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=self.seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.update_weights_from_solution(self.solution, self.X_temp, self.y_temp)
