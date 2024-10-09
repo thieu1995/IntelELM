@@ -82,8 +82,8 @@ jobs:
       - name: Download a distribution artifact
         uses: actions/download-artifact@v4
         with:
-          name: python-package-distributions
-          path: dist/
+          name: dist-package-3.11
+          path: dist
 
       - name: Publish distribution 📦 to Test PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
