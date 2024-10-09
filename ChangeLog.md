@@ -1,3 +1,15 @@
+# Version 1.2.0
+
++ Rename `ELM` class to `MultiLayerELM` class. This new class can be used to define deep ELM network
+  by `layer_sizes` parameter. 
++ Add `AutomatedMhaElmTuner` class that can be used to perform hyperparameter tuning for MhaElm models using 
+  either GridSearchCV or RandomizedSearchCV. Provides an interface for fitting and predicting using the best found model.
++ Add `AutomatedMhaElmComparator` class that automatic compare different MhaElm models based on provided optimizer 
+  configurations. It provides methods for cross-validation and train-test split evaluation.
++ Update docs, examples, and tests.
+
+---------------------------------------------------------------------
+
 # Version 1.1.1
 
 + Update seed value in all 4 classes to ensure reproducibility of your results
