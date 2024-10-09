@@ -22,7 +22,7 @@ class AutomatedMhaElmComparator:
     Args:
         optimizer_dict (dict, optional): A dictionary of optimizer names and parameters.
         task (str, optional): The task type (classification or regression). Defaults to 'classification'.
-        hidden_size (int, optional): The number of hidden neurons. Defaults to 10.
+        layer_sizes (int, list, tuple, optional): The number of nodes in each hidden layer. Defaults is (10, ).
         act_name (str, optional): The activation function name. Defaults to 'elu'.
         obj_name (str, optional): The objective function name. Defaults to None.
         verbose (bool, optional): Whether to print verbose output. Defaults to False.
@@ -31,25 +31,10 @@ class AutomatedMhaElmComparator:
         **kwargs: Additional keyword arguments for model initialization.
     """
 
-    def __init__(self, optimizer_dict=None, task="classification",
-                 hidden_size=10, act_name="elu", obj_name=None, verbose=False, seed=None, obj_weights=None, **kwargs):
-        """Initializes the comparator.
-
-        Creates a list of MhaElm models based on the provided optimizer configurations.
-
-        Args:
-            optimizer_dict (dict, optional): A dictionary of optimizer names and parameters.
-            task (str, optional): The task type (classification or regression). Defaults to 'classification'.
-            hidden_size (int, optional): The number of hidden neurons. Defaults to 10.
-            act_name (str, optional): The activation function name. Defaults to 'elu'.
-            obj_name (str, optional): The objective function name. Defaults to None.
-            verbose (bool, optional): Whether to print verbose output. Defaults to False.
-            seed (int, optional): Random seed for reproducibility. Defaults to None.
-            obj_weights (array-like, optional): Weights for the objective function. Defaults to None.
-            **kwargs: Additional arguments for cross_val_score, cross_validate methods like cv, n_iter, etc.
-        """
+    def __init__(self, optimizer_dict=None, task="classification", layer_sizes=(10, ), act_name="elu",
+                 obj_name=None, verbose=False, seed=None, obj_weights=None, **kwargs):
         self.optimizer_dict = self._set_optimizer_dict(optimizer_dict)
-        self.hidden_size = hidden_size
+        self.layer_sizes = layer_sizes
         self.act_name = act_name
         self.obj_name = obj_name
         self.verbose = verbose
@@ -57,10 +42,10 @@ class AutomatedMhaElmComparator:
         self.generator = np.random.default_rng(seed)
         self.task = task
         if self.task == "classification":
-            self.models = [MhaElmClassifier(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name,
+            self.models = [MhaElmClassifier(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
                                             verbose=verbose, seed=seed) for _ in range(len(self.optimizer_dict))]
         else:
-            self.models = [MhaElmRegressor(hidden_size=hidden_size, act_name=act_name, obj_name=obj_name,
+            self.models = [MhaElmRegressor(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
                                            verbose=verbose, seed=seed, obj_weights=obj_weights) for _ in range(len(self.optimizer_dict))]
         self.kwargs = kwargs
         self.best_estimator_ = None
