@@ -12,7 +12,7 @@ def test_ElmClassifier_class():
     X = np.random.rand(100, 6)
     y = np.random.randint(0, 2, size=100)
 
-    model = ElmClassifier(hidden_size=10, act_name="elu", seed=42)
+    model = ElmClassifier(layer_sizes=(10, ), act_name="elu", seed=42)
     model.fit(X, y)
     pred = model.predict(X)
     assert ElmClassifier.SUPPORTED_CLS_METRICS == model.SUPPORTED_CLS_METRICS

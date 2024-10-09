@@ -13,8 +13,8 @@ def test_MhaElmClassifier_class():
     y = np.random.randint(0, 2, size=100)
 
     opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-    model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="AS", optimizer="BaseGA",
-                             optimizer_paras=opt_paras, verbose=False, seed=42)
+    model = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="AS", optim="BaseGA",
+                             optim_paras=opt_paras, verbose=False, seed=42)
     model.fit(X, y)
     pred = model.predict(X)
     assert MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES == model.SUPPORTED_CLS_OBJECTIVES
