@@ -63,7 +63,7 @@ process consists of the following steps:
 	data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
 	## Define the model
-	model = ElmRegressor(hidden_size=10, act_name="elu", seed=42)
+	model = ElmRegressor(layer_sizes=(10, ), act_name="elu", seed=42)
 
 	## Test the model
 	model.fit(data.X_train, data.y_train)
@@ -94,8 +94,8 @@ If you want to use the Whale Optimization-based ELM (WO-ELM) model, you can chan
 	from intelelm import MhaElmRegressor
 
 	opt_paras = {"name": "WOA", "epoch": 100, "pop_size": 30}
-	model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE",
-			optimizer="OriginalWOA", optimizer_paras=opt_paras, verbose=False, seed=42)
+	model = MhaElmRegressor(layer_sizes=(10, ), act_name="elu", obj_name="MSE",
+			optim="OriginalWOA", optim_paras=opt_paras, verbose=False, seed=42)
 
 In the example above, I had to import the MhaElmRegressor class. This is the class that contains all Metaheuristics-based ELM models for regression problems.
 Then, I defined parameters for the Whale Optimization algorithm. And I defined parameters for the Whale Optimization-based ELM model.
@@ -110,7 +110,7 @@ MhaElmClassifier class (these are hybrid models combining metaheuristics algorit
 
 	from intelelm import ElmClassifier
 
-	model = ElmClassifier(hidden_size=10, act_name="elu", seed=42)
+	model = ElmClassifier(layer_sizes=(10, ), act_name="elu", seed=42)
 
 
 
@@ -119,8 +119,8 @@ MhaElmClassifier class (these are hybrid models combining metaheuristics algorit
 	from intelelm import ElmClassifier
 
 	opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-	model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="BSL",
-			optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False, seed=42)
+	model = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="BSL",
+			optim="BaseGA", optim_paras=opt_paras, verbose=False, seed=42)
 
 
 -------------------
@@ -162,13 +162,13 @@ library to split and scale the data.
 	#### Step 5: Fitting ELM-based model to the dataset
 
 	##### 5.1: Use standard ELM model for classification problem
-	classifer = ElmClassifier(hidden_size=10, act_name="tanh")
+	classifer = ElmClassifier(layer_sizes=(10, ), act_name="tanh")
 
 	##### 5.2: Use Metaheuristic-based ELM model for classification problem
 	print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 	print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 	opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-	classifier = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA", optimizer_paras=opt_paras, seed=42)
+	classifier = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="KLDL", optim="BaseGA", optim_paras=opt_paras, seed=42)
 
 	#### Step 6: Traint the model
 	classifer.fit(X_train, y_train)
@@ -216,8 +216,8 @@ In the example below, we use the Whale Optimization-based ELM model as the base 
 
 	# create model and selector
 	opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-	model = MhaElmRegressor(hidden_size=10, act_name="relu", obj_name="MSE",
-			optimizer="BaseGA", optimizer_paras=opt_paras, verbose=False, seed=42)
+	model = MhaElmRegressor(layer_sizes=(10, ), act_name="relu", obj_name="MSE",
+			optim="BaseGA", optim_paras=opt_paras, verbose=False, seed=42)
 
 	selector = RFE(estimator=model)
 	selector.fit(X_train, y_train)

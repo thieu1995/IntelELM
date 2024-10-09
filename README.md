@@ -5,7 +5,7 @@
 
 ---
 
-[![GitHub release](https://img.shields.io/badge/release-1.1.1-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
+[![GitHub release](https://img.shields.io/badge/release-1.2.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
 [![Wheel](https://img.shields.io/pypi/wheel/gensim.svg)](https://pypi.python.org/pypi/intelelm) 
 [![PyPI version](https://badge.fury.io/py/intelelm.svg)](https://badge.fury.io/py/intelelm)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
@@ -28,7 +28,7 @@ alternative to the traditional ELM network and is compatible with the Scikit-Lea
 perform searches and hyperparameter tuning using the functionalities provided by the Scikit-Learn library.
 
 * **Free software:** GNU General Public License (GPL) V3 license
-* **Provided Estimator**: ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier
+* **Provided Estimator**: ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier, AutomatedMhaElmTuner, AutomatedMhaElmComparator
 * **Total Optimization-based ELM Regression**: > 200 Models 
 * **Total Optimization-based ELM Classification**: > 200 Models
 * **Supported datasets**: 54 (47 classifications and 7 regressions)
@@ -128,27 +128,27 @@ data.y_test = scaler_y.transform(data.y_test)
 #### Step 5: Fitting ELM-based model to the dataset
 
 ##### 5.1: Use standard ELM model for regression problem
-regressor = ElmRegressor(hidden_size=10, act_name="relu", seed=42)
+regressor = ElmRegressor(layer_sizes=(10, ), act_name="relu", seed=42)
 regressor.fit(data.X_train, data.y_train)
 
 ##### 5.2: Use standard ELM model for classification problem 
-classifer = ElmClassifier(hidden_size=10, act_name="tanh", seed=42)
+classifer = ElmClassifier(layer_sizes=(10, ), act_name="tanh", seed=42)
 classifer.fit(data.X_train, data.y_train)
 
 ##### 5.3: Use Metaheuristic-based ELM model for regression problem
 print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-regressor = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="RMSE", 
-                            optimizer="BaseGA", optimizer_paras=opt_paras, seed=42)
+regressor = MhaElmRegressor(layer_sizes=(10, ), act_name="elu", obj_name="RMSE", 
+                            optim="BaseGA", optim_paras=opt_paras, seed=42)
 regressor.fit(data.X_train, data.y_train)
 
 ##### 5.4: Use Metaheuristic-based ELM model for classification problem
 print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
-classifier = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", 
-                              optimizer="BaseGA", optimizer_paras=opt_paras, seed=42)
+classifier = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="KLDL", 
+                              optim="BaseGA", optim_paras=opt_paras, seed=42)
 classifier.fit(data.X_train, data.y_train)
 
 #### Step 6: Predicting a new result
@@ -245,9 +245,11 @@ data.split_train_test(test_size=0.2, random_state=10)  # Try different random_st
   optimizer to explore the solution space thoroughly.
 
 ```python
+from intelelm import MhaElmClassifier
+
 opt_paras = {"name": "GA", "epoch": 30, "pop_size": 30}
-model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA", 
-                         optimizer_paras=opt_paras, verbose=True, seed=42)
+model = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="KLDL", 
+                         optim="BaseGA", optim_paras=opt_paras, verbose=True, seed=42)
 model.fit(X_train, y_train, lb=(-10., ), ub=(10., ))
 y_pred = model.predict(X_test)
 ```
