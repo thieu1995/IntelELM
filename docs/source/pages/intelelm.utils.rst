@@ -33,6 +33,14 @@ intelelm.utils.evaluator module
    :undoc-members:
    :show-inheritance:
 
+intelelm.utils.scaler module
+----------------------------
+
+.. automodule:: intelelm.utils.scaler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 intelelm.utils.validator module
 -------------------------------
 
