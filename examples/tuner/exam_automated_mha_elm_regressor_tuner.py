@@ -20,12 +20,12 @@ data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
 # Example parameter grid
 param_dict = {
-    'hidden_size': [10, 20],
+    'layer_sizes': [10, 20],
     'act_name': ['relu', 'elu'],
     "obj_name": ["RMSE", "MAE"],
-    'optimizer': ['BaseGA', "OriginalPSO"],
-    'optimizer_paras__epoch': [10, 20],
-    'optimizer_paras__pop_size': [20, 30],
+    'optim': ['BaseGA', "OriginalPSO"],
+    'optim_paras__epoch': [10, 20],
+    'optim_paras__pop_size': [20, 30],
     'seed': [42],
     "verbose": [False],
 }

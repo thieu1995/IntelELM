@@ -16,12 +16,12 @@ data.X_test = scaler_X.transform(data.X_test)
 
 # Example parameter grid
 param_dict = {
-    'hidden_size': [10, 20],
+    'layer_sizes': [10, 20],
     'act_name': ['relu', 'elu'],
     "obj_name": ["BSL", "KLDL", "F1S"],
-    'optimizer': ['BaseGA', "OriginalPSO"],
-    'optimizer_paras__epoch': [10, 20],
-    'optimizer_paras__pop_size': [20],
+    'optim': ['BaseGA', "OriginalPSO"],
+    'optim_paras__epoch': [10, 20],
+    'optim_paras__pop_size': [20],
     'seed': [42],
     "verbose": [False],
 }
