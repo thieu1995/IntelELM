@@ -40,7 +40,9 @@ class MultiLayerELM:
         - layer_sizes: List of integers, where each integer represents the number of neurons in the respective hidden layers. Default is (10, )
         - act_name: Activation function to be used in the hidden layers. Default is 'relu'.
         """
-        self.layer_sizes = layer_sizes
+        if not isinstance(layer_sizes, (list, tuple, np.ndarray, int)):
+            raise ValueError(f"layer_sizes should be an int, list, tuple, or np.ndarray. Got {type(layer_sizes)}")
+        self.layer_sizes = layer_sizes if isinstance(layer_sizes, (list, tuple, np.ndarray)) else [layer_sizes]
         self.act_name = act_name
         self.act_func = getattr(activation, self.act_name)
         self.generator = np.random.default_rng(seed)
