@@ -17,7 +17,7 @@ class ElmRegressor(BaseElm, RegressorMixin):
     It uses Moore–Penrose inverse matrix to calculate the output.
     """
 
-    def __init__(self, layer_sizes, act_name="elu", seed=None):
+    def __init__(self, layer_sizes=(10, ), act_name="elu", seed=None):
         """
         Initializes the ElmRegressor with specified parameters.
 
@@ -165,7 +165,7 @@ class ElmClassifier(BaseElm, ClassifierMixin):
 
     CLS_OBJ_LOSSES = ["CEL", "HL", "KLDL", "BSL"]
 
-    def __init__(self, layer_sizes, act_name="elu", seed=None):
+    def __init__(self, layer_sizes=(10, ), act_name="elu", seed=None):
         super().__init__(layer_sizes=layer_sizes, act_name=act_name)
         self.return_prob = False
         self.n_labels = None
