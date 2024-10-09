@@ -6,7 +6,7 @@ There are so many ways to install our library. For example:
 
 * Install from the `PyPI release <https://pypi.python.org/pypi/intelelm />`_::
 
-   $ pip install intelelm==1.1.1
+   $ pip install intelelm==1.2.0
 
 
 * Install directly from source code::

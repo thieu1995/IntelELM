@@ -6,7 +6,7 @@
 Welcome to IntelELM's documentation!
 ====================================
 
-.. image:: https://img.shields.io/badge/release-1.1.1-yellow.svg
+.. image:: https://img.shields.io/badge/release-1.2.0-yellow.svg
    :target: https://github.com/thieu1995/intelelm/releases
 
 .. image:: https://img.shields.io/pypi/wheel/gensim.svg
@@ -60,7 +60,7 @@ alternative to the traditional ELM network and is compatible with the Scikit-Lea
 perform searches and hyperparameter tuning using the functionalities provided by the Scikit-Learn library.
 
 * **Free software:** GNU General Public License (GPL) V3 license
-* **Provided Estimator**: ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier
+* **Provided Estimator**: ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier, AutomatedMhaElmTuner, AutomatedMhaElmComparator
 * **Total Optimization-based ELM Regression**: > 200 Models
 * **Total Optimization-based ELM Classification**: > 200 Models
 * **Supported datasets**: 54 (47 classifications and 7 regressions)
