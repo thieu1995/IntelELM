@@ -18,7 +18,7 @@ data.X_test = scaler_X.transform(data.X_test)
 data.y_train, scaler_y = data.scale(data.y_train, scaling_methods=('minmax', ))
 data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
-model = ElmRegressor(hidden_size=10, act_name="elu", seed=42)
+model = ElmRegressor(layer_sizes=(10, ), act_name="elu", seed=42)
 model.fit(data.X_train, data.y_train)
 
 y_pred = model.predict(data.X_test)
