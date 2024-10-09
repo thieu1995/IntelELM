@@ -12,8 +12,6 @@ on:
 
 env:
   PROJECT_NAME: intelelm
-  DIST_PATH: dist
-  CACHE_KEY: requirements-pip-${{ matrix.python-version }}-${{ hashFiles('requirements.txt') }}
 
 jobs:
   build:
@@ -21,70 +19,82 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: [3.8, 3.9, "3.10", "3.11", "3.12"]
+
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v1
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 9
           submodules: false
-      - name: Set Up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+
+      - name: Use Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Cache Dependencies
-        uses: actions/cache@v1
-        id: cache-dependencies
+
+      - uses: actions/cache@v3
+        id: depcache
         with:
           path: deps
-          key: ${{ env.CACHE_KEY }}
-      - name: Download Dependencies
-        if: steps.cache-dependencies.outputs.cache-hit != 'true'
-        run: pip download --dest=deps -r requirements.txt
-      - name: Install Dependencies
-        run: pip install -U --no-index --find-links=deps deps/*
-      - name: Run Tests and Lint
+          key: requirements-pip-${{ matrix.python-version }}-${{ hashFiles('requirements.txt') }}
+
+      - name: Download dependencies
+        if: steps.depcache.outputs.cache-hit != 'true'
+        run: |
+          pip download --dest=deps -r requirements.txt
+
+      - name: Install dependencies
+        run: |
+          pip install -U --no-index --find-links=deps deps/*
+
+      - name: Run tests
         run: |
           pytest --doctest-modules --junitxml=junit/pytest-results-${{ matrix.python-version }}.xml --cov=$PROJECT_NAME --cov-report=xml tests/
           flake8 tests/
-      - name: Upload Pytest Results
+
+      - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
           name: pytest-results-${{ matrix.python-version }}
           path: junit/pytest-results-${{ matrix.python-version }}.xml
         if: always()
-      - name: Install Distribution Tools
-        if: matrix.python-version == 3.11
+
+      - name: Install distribution dependencies
         run: pip install --upgrade twine setuptools wheel
-      - name: Build Distribution Package
         if: matrix.python-version == 3.11
+
+      - name: Create distribution package
         run: python setup.py sdist bdist_wheel
-      - name: Upload Distribution Package
         if: matrix.python-version == 3.11
+
+      - name: Upload distribution package
         uses: actions/upload-artifact@v3
         with:
           name: dist-package-${{ matrix.python-version }}
-          path: ${{ env.DIST_PATH }}
+          path: dist
+        if: matrix.python-version == 3.11
 
   publish:
     runs-on: ubuntu-latest
     needs: build
     if: github.event_name == 'release'
     steps:
-      - name: Download Distribution Artifact
+      - name: Download a distribution artifact
         uses: actions/download-artifact@v3
         with:
           name: dist-package-3.11
-          path: ${{ env.DIST_PATH }}
-      - name: Publish To Test PyPI
-        uses: pypa/gh-action-pypi-publish@master
+          path: dist
+
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@v2
         with:
           skip_existing: true
           user: __token__
           password: ${{ secrets.test_pypi_password }}
           repository_url: https://test.pypi.org/legacy/
-      - name: Publish To PyPI
-        uses: pypa/gh-action-pypi-publish@master
+
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@v2
         with:
           user: __token__
           password: ${{ secrets.pypi_password }}
