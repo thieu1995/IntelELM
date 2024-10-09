@@ -7,24 +7,33 @@
 import numpy as np
 from intelelm import get_dataset, MhaElmRegressor
 
-
+# Load and split the dataset
 data = get_dataset("diabetes")
 data.split_train_test(test_size=0.2, random_state=2)
 print(data.X_train.shape, data.X_test.shape)
-# scaling_methods=('standard', ), list_dict_paras
-data.X_train, scaler_X = data.scale(data.X_train, scaling_methods=('minmax', ))
-data.X_test = scaler_X.transform(data.X_test)
 
-data.y_train, scaler_y = data.scale(data.y_train, scaling_methods=('minmax', ))
-data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
+# Scale the data
+def scale_data(train_data, test_data, scaling_methods=('minmax',)):
+    scaled_train, scaler = data.scale(train_data, scaling_methods=scaling_methods)
+    scaled_test = scaler.transform(test_data)
+    return scaled_train, scaled_test, scaler
+
+
+data.X_train, data.X_test, scaler_X = scale_data(data.X_train, data.X_test)
+data.y_train, data.y_test, scaler_y = scale_data(data.y_train, np.reshape(data.y_test, (-1, 1)))
+
+# Define model parameters and initialize the model
 opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-model = MhaElmRegressor(hidden_size=10, act_name="elu", obj_name="MSE", optimizer="BaseGA",
-                        optimizer_paras=opt_paras, seed=42)
+model = MhaElmRegressor(layer_sizes=(10,), act_name="elu", obj_name="MSE", optim="BaseGA", optim_paras=opt_paras, seed=42)
+
+# Train the model
 model.fit(data.X_train, data.y_train)
 
+# Make predictions
 y_pred = model.predict(data.X_test)
 
+# Evaluate the model
 print(model.score(data.X_test, data.y_test, method="RMSE"))
 print(model.scores(data.X_test, data.y_test, list_methods=("RMSE", "R2")))
 print(model.evaluate(data.y_test, y_pred, list_metrics=("R2", "MAPE", "NSE")))

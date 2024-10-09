@@ -133,7 +133,6 @@ class BaseElm(BaseEstimator):
         super().__init__()
         self.hidden_size = hidden_size
         self.act_name = act_name
-        self.weights = {}
         self.network, self.obj_scaler, self.loss_train = None, None, None
         self.n_labels, self.obj_scaler = None, None 
 
@@ -143,6 +142,9 @@ class BaseElm(BaseEstimator):
             return validator.check_str("method", method, list_supported_methods)
         else:
             raise ValueError(f"method should be a string and belongs to {list_supported_methods}")
+
+    def get_weights(self):
+        return self.network.get_weights()
 
     def create_network(self, X, y):
         return None, None
