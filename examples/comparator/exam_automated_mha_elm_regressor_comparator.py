@@ -29,7 +29,7 @@ optimizer_dict = {
 compartor = AutomatedMhaElmComparator(
     optimizer_dict=optimizer_dict,
     task="regression",
-    hidden_size=10,
+    layer_sizes=(10, ),
     act_name="elu",
     obj_name="R2",
     verbose=False,
@@ -44,6 +44,6 @@ compartor = AutomatedMhaElmComparator(
 #                                            cv=4, return_train_score=True, n_trials=2, to_csv=True)
 # print(results)
 
-results = compartor.compare_train_test(data.X_train, data.y_train, data.X_test, data.y_test, metrics=["MSE", "MAPE", "R2", "KGE", "NSE"],
-                                       n_trials=2, to_csv=True)
+results = compartor.compare_train_test(data.X_train, data.y_train, data.X_test, data.y_test,
+                                       metrics=["MSE", "MAPE", "R2", "KGE", "NSE"], n_trials=2, to_csv=True)
 print(results)
