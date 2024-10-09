@@ -21,8 +21,8 @@ data = Data(X, y, name="RandomData")
 data.split_train_test(test_size=0.2, random_state=2)
 
 opt_paras = {"name": "GA", "epoch": 30, "pop_size": 30}
-model = MhaElmClassifier(hidden_size=10, act_name="elu", obj_name="KLDL", optimizer="BaseGA",
-                         optimizer_paras=opt_paras, verbose=True, seed=42)
+model = MhaElmClassifier(layer_sizes=10, act_name="elu", obj_name="KLDL", optim="BaseGA",
+                         optim_paras=opt_paras, verbose=True, seed=42)
 model.fit(data.X_train, data.y_train, lb=(-10, ), ub=(10, ))
 y_pred = model.predict(data.X_test)
 
