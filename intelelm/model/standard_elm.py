@@ -7,59 +7,63 @@
 import numpy as np
 from sklearn.base import ClassifierMixin, RegressorMixin
 from sklearn.preprocessing import OneHotEncoder
-from intelelm.base_elm import BaseElm, ELM
+from intelelm.model.base_elm import BaseElm, MultiLayerELM
 from intelelm.utils.encoder import ObjectiveScaler
 
 
 class ElmRegressor(BaseElm, RegressorMixin):
     """
-    Defines the ELM model for Regression problems that inherit the BaseElm and RegressorMixin classes.
-
-    Parameters
-    ----------
-    hidden_size : int, default=10
-        The number of hidden nodes
-
-    act_name : {"relu", "leaky_relu", "celu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid",
-        "hard_sigmoid", "log_sigmoid", "silu", "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink",
-        "soft_shrink", "hard_shrink", "softmin", "softmax", "log_softmax" }, default='sigmoid'
-        Activation function for the hidden layer.
-
-    seed: int, default=None
-        Determines random number generation for weights and bias initialization.
-        Pass an int for reproducible results across multiple function calls.
-
-    Examples
-    --------
-    >>> from intelelm import ElmRegressor, Data
-    >>> from sklearn.datasets import make_regression
-    >>> X, y = make_regression(n_samples=200, random_state=1)
-    >>> data = Data(X, y)
-    >>> data.split_train_test(test_size=0.2, random_state=1)
-    >>> model = ElmRegressor(hidden_size=10, act_name="elu")
-    >>> model.fit(data.X_train, data.y_train)
-    >>> pred = model.predict(data.X_test)
-    >>> print(pred)
+    Defines the general class of Traditional ELM model for Regression problems that inherit the BaseElm and RegressorMixin classes.
+    It uses Moore–Penrose inverse matrix to calculate the output.
     """
 
-    def __init__(self, hidden_size=10, act_name="elu", seed=None):
-        super().__init__(hidden_size=hidden_size, act_name=act_name)
+    def __init__(self, layer_sizes, act_name="elu", seed=None):
+        """
+        Initializes the ElmRegressor with specified parameters.
+
+        Parameters
+        ----------
+        layer_sizes : list of int, integers > 0
+            A list of integers specifying the number of neurons in each hidden layer.
+
+        act_name : str, default="elu"
+            The activation function to be used in the network.
+
+        seed : int or None, default=None
+            The seed for random number generation.
+        """
+        super().__init__(layer_sizes=layer_sizes, act_name=act_name)
         self.seed = seed
 
-    def create_network(self, X, y):
+    def create_network(self, X, y) -> MultiLayerELM:
+        """
+        Creates a MultiLayerELM network based on provided input data.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Input samples.
+
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            Target values for `X`.
+
+        Returns
+        -------
+        network : MultiLayerELM
+            An instance of MultiLayerELM configured with the specified layers and activation function.
+        """
+        self.input_size = X.shape[1]
         if type(y) in (list, tuple, np.ndarray):
             y = np.squeeze(np.asarray(y))
-            if y.ndim == 1:
-                size_output = 1
-            elif y.ndim == 2:
-                size_output = y.shape[1]
-            else:
+            if y.ndim != 1 and y.ndim != 2:
                 raise TypeError("Invalid y array shape, it should be 1D vector or 2D matrix.")
         else:
             raise TypeError("Invalid y array type, it should be list, tuple or np.ndarray")
         obj_scaler = ObjectiveScaler(obj_name="self", ohe_scaler=None)
-        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=size_output, act_name=self.act_name, seed=self.seed)
-        return network, obj_scaler
+        network = MultiLayerELM(layer_sizes=self.layer_sizes, act_name=self.act_name, seed=self.seed)
+        network.obj_scaler = obj_scaler
+        network.input_size = X.shape[1]
+        return network
 
     def score(self, X, y, method="RMSE"):
         """Return the metric of the prediction.
@@ -129,12 +133,12 @@ class ElmRegressor(BaseElm, RegressorMixin):
 
 class ElmClassifier(BaseElm, ClassifierMixin):
     """
-    Defines the general class of Metaheuristic-based ELM model for Classification problems that inherit the BaseElm and ClassifierMixin classes.
+    Defines the general class of Traditional ELM model for Classification problems that inherit the BaseElm and ClassifierMixin classes.
 
     Parameters
     ----------
-    hidden_size : int, default=10
-        The number of hidden nodes
+    layer_sizes : list of int, integers > 0
+        A list of integers specifying the number of neurons in each hidden layer.
 
     act_name : {"relu", "leaky_relu", "celu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid",
         "hard_sigmoid", "log_sigmoid", "silu", "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink",
@@ -152,7 +156,7 @@ class ElmClassifier(BaseElm, ClassifierMixin):
     >>> X, y = make_classification(n_samples=100, random_state=1)
     >>> data = Data(X, y)
     >>> data.split_train_test(test_size=0.2, random_state=1)
-    >>> model = ElmClassifier(hidden_size=10, act_name="elu")
+    >>> model = ElmClassifier(layer_sizes=(10, ), act_name="elu")
     >>> model.fit(data.X_train, data.y_train)
     >>> pred = model.predict(data.X_test)
     >>> print(pred)
@@ -161,13 +165,13 @@ class ElmClassifier(BaseElm, ClassifierMixin):
 
     CLS_OBJ_LOSSES = ["CEL", "HL", "KLDL", "BSL"]
 
-    def __init__(self, hidden_size=10, act_name="elu", seed=None):
-        super().__init__(hidden_size=hidden_size, act_name=act_name)
+    def __init__(self, layer_sizes, act_name="elu", seed=None):
+        super().__init__(layer_sizes=layer_sizes, act_name=act_name)
         self.return_prob = False
         self.n_labels = None
         self.seed = seed
 
-    def create_network(self, X, y):
+    def create_network(self, X, y) -> MultiLayerELM:
         if type(y) in (list, tuple, np.ndarray):
             y = np.squeeze(np.asarray(y))
             if y.ndim == 1:
@@ -179,8 +183,10 @@ class ElmClassifier(BaseElm, ClassifierMixin):
         ohe_scaler = OneHotEncoder(sparse_output=False)
         ohe_scaler.fit(np.reshape(y, (-1, 1)))
         obj_scaler = ObjectiveScaler(obj_name="softmax", ohe_scaler=ohe_scaler)
-        network = ELM(size_input=X.shape[1], size_hidden=self.hidden_size, size_output=self.n_labels, act_name=self.act_name, seed=self.seed)
-        return network, obj_scaler
+        network = MultiLayerELM(layer_sizes=self.layer_sizes, act_name=self.act_name, seed=self.seed)
+        network.obj_scaler = obj_scaler
+        network.input_size = X.shape[1]
+        return network
 
     def score(self, X, y, method="AS"):
         """
