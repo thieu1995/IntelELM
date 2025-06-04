@@ -5,19 +5,15 @@
 
 ---
 
-[![GitHub release](https://img.shields.io/badge/release-1.2.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
+[![GitHub release](https://img.shields.io/badge/release-1.3.0-yellow.svg)](https://github.com/thieu1995/intelelm/releases)
 [![Wheel](https://img.shields.io/pypi/wheel/gensim.svg)](https://pypi.python.org/pypi/intelelm) 
 [![PyPI version](https://badge.fury.io/py/intelelm.svg)](https://badge.fury.io/py/intelelm)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
-![PyPI - Status](https://img.shields.io/pypi/status/intelelm.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/intelelm.svg)
 [![Downloads](https://static.pepy.tech/badge/intelelm)](https://pepy.tech/project/intelelm)
 [![Tests & Publishes to PyPI](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml/badge.svg)](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml)
-![GitHub Release Date](https://img.shields.io/github/release-date/thieu1995/intelelm.svg)
 [![Documentation Status](https://readthedocs.org/projects/intelelm/badge/?version=latest)](https://intelelm.readthedocs.io/en/latest/?badge=latest)
 [![Chat](https://img.shields.io/badge/Chat-on%20Telegram-blue)](https://t.me/+fRVCJGuGJg1mNDg1)
-![GitHub contributors](https://img.shields.io/github/contributors/thieu1995/intelelm.svg)
-[![GitTutorial](https://img.shields.io/badge/PR-Welcome-%23FF8300.svg?)](https://git-scm.com/book/en/v2/GitHub-Contributing-to-a-Project)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8249045.svg)](https://doi.org/10.5281/zenodo.8249045)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -141,7 +137,7 @@ print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 regressor = MhaElmRegressor(layer_sizes=(10, ), act_name="elu", obj_name="RMSE", 
-                            optim="BaseGA", optim_paras=opt_paras, seed=42)
+                            optim="BaseGA", optim_params=opt_paras, seed=42)
 regressor.fit(data.X_train, data.y_train)
 
 ##### 5.4: Use Metaheuristic-based ELM model for classification problem
@@ -149,7 +145,7 @@ print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 classifier = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="KLDL", 
-                              optim="BaseGA", optim_paras=opt_paras, seed=42)
+                              optim="BaseGA", optim_params=opt_paras, seed=42)
 classifier.fit(data.X_train, data.y_train)
 
 #### Step 6: Predicting a new result
@@ -250,7 +246,7 @@ from intelelm import MhaElmClassifier
 
 opt_paras = {"name": "GA", "epoch": 30, "pop_size": 30}
 model = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="KLDL", 
-                         optim="BaseGA", optim_paras=opt_paras, verbose=True, seed=42)
+                         optim="BaseGA", optim_params=opt_paras, verbose=True, seed=42)
 model.fit(X_train, y_train, lb=(-10., ), ub=(10., ))
 y_pred = model.predict(X_test)
 ```
