@@ -1,3 +1,16 @@
+# Version 1.3.0
+
++ Update `mealpy` dependency from `3.0.1` to `3.0.2`.
++ Fix bug in `validator` module
++ Update `data_loader` module.
++ Move parameters `lb`, `ub`, `mode`, `n_workers`, `termination` from `fit()` to `init()` in `BaseMhaElm`, `MhaElmRegressor`, and `MhaElmClassifier` classes.
++ Add more parameters to `MhaElmComparator` class.
++ Update ChangeLog, workflows, citation, readme, setup, manifest files
++ Update examples, tests, and documentation for MhaElm models.
++ Remove support for python `3.7.x`
+
+---------------------------------------------------------------------
+
 # Version 1.2.0
 
 + Rename `ELM` class to `MultiLayerELM` class. This new class can be used to define deep ELM network
