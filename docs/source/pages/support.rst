@@ -66,6 +66,19 @@ Important links
     * https://github.com/aiir-team
 
 
+=================
+Some Useful Links
+=================
+
+1. https://analyticsindiamag.com/a-beginners-guide-to-extreme-learning-machine/
+2. https://medium.datadriveninvestor.com/extreme-learning-machine-for-simple-classification-e776ad797a3c
+3. https://www.extreme-learning-machines.org/
+4. https://web.njit.edu/~usman/courses/cs675_fall20/ELM-NC-2006.pdf
+5. https://m-clark.github.io/models-by-example/elm.html
+6. https://github.com/ivallesp/simplestELM
+7. https://www.javatpoint.com/elm-in-machine-learning
+
+
 =======
 License
 =======
