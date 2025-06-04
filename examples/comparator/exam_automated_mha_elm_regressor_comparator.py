@@ -20,29 +20,30 @@ data.y_test = scaler_y.transform(np.reshape(data.y_test, (-1, 1)))
 
 
 # Example optimizer dict
-optimizer_dict = {
+optim_dict = {
     'BaseGA':       {"epoch": 10, "pop_size": 20},
     "OriginalPSO":  {"epoch": 10, "pop_size": 20},
 }
 
 # Initialize the comparator
 compartor = AutomatedMhaElmComparator(
-    optimizer_dict=optimizer_dict,
+    optim_dict=optim_dict,
     task="regression",
     layer_sizes=(10, ),
     act_name="elu",
     obj_name="R2",
     verbose=False,
     seed=42,
+    lb=None, ub=None, mode='single', n_workers=None, termination=None
 )
 
 # Perform comparison
-# results = compartor.compare_cross_val_score(data.X_train, data.y_train, metric="RMSE", cv=4, n_trials=2, to_csv=True)
-# print(results)
+results = compartor.compare_cross_val_score(data.X_train, data.y_train, metric="RMSE", cv=4, n_trials=2, to_csv=True)
+print(results)
 
-# results = compartor.compare_cross_validate(data.X_train, data.y_train, metrics=["MSE", "MAPE", "R2", "KGE", "NSE"],
-#                                            cv=4, return_train_score=True, n_trials=2, to_csv=True)
-# print(results)
+results = compartor.compare_cross_validate(data.X_train, data.y_train, metrics=["MSE", "MAPE", "R2", "KGE", "NSE"],
+                                           cv=4, return_train_score=True, n_trials=2, to_csv=True)
+print(results)
 
 results = compartor.compare_train_test(data.X_train, data.y_train, data.X_test, data.y_test,
                                        metrics=["MSE", "MAPE", "R2", "KGE", "NSE"], n_trials=2, to_csv=True)
