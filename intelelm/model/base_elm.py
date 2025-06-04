@@ -669,6 +669,8 @@ class BaseMhaElm(BaseElm):
         return f"{self.optimizer.name}-ELM"
 
     def set_params(self, **params):
+        if self.optim_params is None:
+            self.optim_params = {}
         # Handle nested parameters for the optimizer
         optimizer_params = {k.split('__')[1]: v for k, v in params.items() if k.startswith('optim_paras__')}
 
