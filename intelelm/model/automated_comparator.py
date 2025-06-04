@@ -14,40 +14,124 @@ from intelelm.utils.evaluator import get_metric_sklearn
 
 class AutomatedMhaElmComparator:
     """
-    Automated compare different MhaElm models based on provided optimizer configurations.
+    AutomatedMhaElmComparator Class
+    ===============================
+    A utility class for comparing different `MhaElm` models based on optimizer configurations.
+    It supports cross-validation and train-test split evaluation for both classification and regression tasks.
 
-    This class facilitates the comparison of multiple MhaElm models with varying optimizer
-    configurations. It provides methods for cross-validation and train-test split evaluation.
+    Attributes
+    ----------
+    optim_dict : dict
+        Dictionary containing optimizer names and their parameters.
 
-    Args:
-        optimizer_dict (dict, optional): A dictionary of optimizer names and parameters.
-        task (str, optional): The task type (classification or regression). Defaults to 'classification'.
-        layer_sizes (int, list, tuple, optional): The number of nodes in each hidden layer. Defaults is (10, ).
-        act_name (str, optional): The activation function name. Defaults to 'elu'.
-        obj_name (str, optional): The objective function name. Defaults to None.
-        verbose (bool, optional): Whether to print verbose output. Defaults to False.
-        seed (int, optional): Random seed for reproducibility. Defaults to None.
-        obj_weights (array-like, optional): Weights for the objective function. Defaults to None.
-        **kwargs: Additional keyword arguments for model initialization.
+    task : str
+        Type of task, either 'classification' or 'regression'.
+
+    layer_sizes : int, list, or tuple
+        Number of nodes in each hidden layer.
+
+    act_name : str
+        Name of the activation function.
+
+    obj_name : str
+        Name of the objective function.
+
+    verbose : bool
+        Whether to print verbose output.
+
+    seed : int
+        Random seed for reproducibility.
+
+    obj_weights : array-like, optional
+        Weights for the objective function in regression tasks.
+
+    lb : list, tuple, np.ndarray, int, or float
+        Lower bounds for optimization variables.
+
+    ub : list, tuple, np.ndarray, int, or float
+        Upper bounds for optimization variables.
+
+    mode : str
+        Optimization mode, e.g., 'single' or 'swarm', 'thread, or 'process'.
+
+    n_workers : int
+        Number of workers for parallel optimization.
+
+    termination : object
+        Termination criteria for the optimization process.
+
+    models : list
+        List of `MhaElmClassifier` or `MhaElmRegressor` models.
+
+    best_estimator_ : object
+        Best model after comparison.
+
+    best_params_ : dict
+        Parameters of the best model.
+
+    result_cross_val_scores_ : dict
+        Results from cross-validation comparison.
+
+    result_train_test_ : dict
+        Results from train-test split comparison.
+
+    Methods
+    -------
+    __init__(optim_dict=None, task="classification", layer_sizes=(10,), act_name="elu", obj_name=None, verbose=False,
+             seed=None, obj_weights=None, lb=None, ub=None, mode='single', n_workers=None, termination=None)
+        Initializes the `AutomatedMhaElmComparator` with specified parameters.
+
+    _set_optimizer_dict(opt_dict)
+        Validates and sets the optimizer dictionary.
+
+    _filter_metric_results(results, metric_names=None, return_train_score=False)
+        Filters and formats metric results.
+
+    _rename_metrics(results, suffix="train")
+        Renames metric keys with a specified suffix.
+
+    _results_to_csv(to_csv=False, results=None, saved_file_path="history/results.csv")
+        Saves results to a CSV file.
+
+    compare_cross_validate(X, y, metrics=None, cv=5, return_train_score=True, n_trials=10, to_csv=True,
+                           saved_file_path="history/results_cross_validate.csv", **kwargs)
+        Compares models using cross-validation with multiple metrics.
+
+    compare_cross_val_score(X, y, metric=None, cv=5, n_trials=10, to_csv=True,
+                            saved_file_path="history/results_cross_val_score.csv", **kwargs)
+        Compares models using cross-validation with a single metric.
+
+    compare_train_test(X_train, y_train, X_test, y_test, metrics=None, n_trials=10, to_csv=True,
+                       saved_file_path="history/results_train_test.csv")
+        Compares models using train-test split evaluation.
     """
 
-    def __init__(self, optimizer_dict=None, task="classification", layer_sizes=(10, ), act_name="elu",
-                 obj_name=None, verbose=False, seed=None, obj_weights=None, **kwargs):
-        self.optimizer_dict = self._set_optimizer_dict(optimizer_dict)
+    def __init__(self, optim_dict=None, task="classification", layer_sizes=(10, ), act_name="elu",
+                 obj_name=None, verbose=False, seed=None, obj_weights=None,
+                 lb=None, ub=None, mode='single', n_workers=None, termination=None):
+        self.optim_dict = self._set_optimizer_dict(optim_dict)
         self.layer_sizes = layer_sizes
         self.act_name = act_name
         self.obj_name = obj_name
         self.verbose = verbose
         self.obj_weights = obj_weights
         self.generator = np.random.default_rng(seed)
+        self.seed = seed
+        self.lb = lb
+        self.ub = ub
+        self.mode = mode
+        self.n_workers = n_workers
+        self.termination = termination
         self.task = task
         if self.task == "classification":
             self.models = [MhaElmClassifier(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
-                                            verbose=verbose, seed=seed) for _ in range(len(self.optimizer_dict))]
+                                            verbose=verbose, seed=seed, lb=lb, ub=ub, mode=mode, n_workers=n_workers,
+                                            termination=termination) for _ in range(len(self.optim_dict))]
         else:
             self.models = [MhaElmRegressor(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
-                                           verbose=verbose, seed=seed, obj_weights=obj_weights) for _ in range(len(self.optimizer_dict))]
-        self.kwargs = kwargs
+                                           verbose=verbose, seed=seed, obj_weights=obj_weights,
+                                           lb=lb, ub=ub, mode=mode, n_workers=n_workers,
+                                           termination=termination) for _ in range(len(self.optim_dict))]
         self.best_estimator_ = None
         self.best_params_ = None
         self.result_cross_val_scores_ = None
@@ -56,7 +140,7 @@ class AutomatedMhaElmComparator:
     def _set_optimizer_dict(self, opt_dict):
         """Validates the optimizer dictionary."""
         if type(opt_dict) is not dict:
-            raise TypeError(f"Support optimizer_dict hyper-parameter as dict only: {type(opt_dict)}")
+            raise TypeError(f"Support optim_dict hyper-parameter as dict only: {type(opt_dict)}")
         return opt_dict
 
     def _filter_metric_results(self, results, metric_names=None, return_train_score=False):
@@ -112,7 +196,7 @@ class AutomatedMhaElmComparator:
         list_seeds = self.generator.choice(list(range(0, 1000)), n_trials, replace=False)
         scoring = get_metric_sklearn(task=self.task, metric_names=metrics)
         results = []
-        for idx, (opt_name, opt_paras) in enumerate(self.optimizer_dict.items()):
+        for idx, (opt_name, opt_paras) in enumerate(self.optim_dict.items()):
             self.models[idx].set_optimizer_object(opt_name, opt_paras)
             for trial, seed in enumerate(list_seeds):
                 self.models[idx].set_seed(seed)
@@ -145,7 +229,7 @@ class AutomatedMhaElmComparator:
         list_seeds = self.generator.choice(list(range(0, 1000)), n_trials, replace=False)
         scoring = get_metric_sklearn(task=self.task, metric_names=[metric])[metric]
         results = []
-        for idx, (opt_name, opt_paras) in enumerate(self.optimizer_dict.items()):
+        for idx, (opt_name, opt_paras) in enumerate(self.optim_dict.items()):
             self.models[idx].set_optimizer_object(opt_name, opt_paras)
             for trial, seed in enumerate(list_seeds):
                 self.models[idx].set_seed(seed)
@@ -175,7 +259,7 @@ class AutomatedMhaElmComparator:
             pandas.DataFrame: The comparison results.
         """
         list_seeds = self.generator.choice(list(range(0, 1000)), n_trials, replace=False)
-        for idx, (opt_name, opt_paras) in enumerate(self.optimizer_dict.items()):
+        for idx, (opt_name, opt_paras) in enumerate(self.optim_dict.items()):
             self.models[idx].set_optimizer_object(opt_name, opt_paras)
         results = []
         for idx, _ in enumerate(self.models):
