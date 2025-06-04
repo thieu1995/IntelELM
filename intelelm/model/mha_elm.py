@@ -17,7 +17,7 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
     class MhaElmRegressor(BaseMhaElm, RegressorMixin)
 
     def __init__(self, layer_sizes, act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_paras=None, seed=None, verbose=False, obj_weights=None):
+                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False, obj_weights=None):
 
         Parameters
         ----------
@@ -33,7 +33,7 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         optim : str, default="BaseGA"
             The optimization method to be used.
 
-        optim_paras : dict, optional
+        optim_params : dict, optional
             Parameters for the optimization method.
 
         seed : int, optional
@@ -46,9 +46,9 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
             Weights for the objective function.
     """
     def __init__(self, layer_sizes=(10, ), act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_paras=None, seed=None, verbose=False, obj_weights=None):
+                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False, obj_weights=None):
         super().__init__(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
-                         optim=optim, optim_paras=optim_paras, seed=seed, verbose=verbose)
+                         optim=optim, optim_params=optim_params, seed=seed, verbose=verbose)
         self.obj_weights = obj_weights
 
     def create_network(self, X, y) -> MultiLayerELM:
@@ -194,7 +194,7 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
 
     Methods
     -------
-    __init__(self, layer_sizes=None, act_name="elu", obj_name=None, optim="BaseGA", optim_paras=None, seed=None, verbose=False)
+    __init__(self, layer_sizes=None, act_name="elu", obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False)
         Initializes the MhaElmClassifier with the given parameters.
 
     _check_y(self, y)
@@ -218,9 +218,9 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
     CLS_OBJ_LOSSES = ["CEL", "HL", "KLDL", "BSL"]
 
     def __init__(self, layer_sizes=(10, ), act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_paras=None, seed=None, verbose=False):
+                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False):
         super().__init__(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
-                         optim=optim, optim_paras=optim_paras, seed=seed, verbose=verbose)
+                         optim=optim, optim_params=optim_params, seed=seed, verbose=verbose)
         self.return_prob = False
 
     def _check_y(self, y):

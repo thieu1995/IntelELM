@@ -578,7 +578,7 @@ class BaseMhaElm(BaseElm):
 
     Methods
     -------
-    __init__(layer_sizes=None, act_name="elu", obj_name=None, optim="BaseGA", optim_paras=None, seed=None, verbose=True)
+    __init__(layer_sizes=None, act_name="elu", obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=True)
         Initializes the `BaseMhaElm` with specified parameters.
 
     get_name()
@@ -590,10 +590,10 @@ class BaseMhaElm(BaseElm):
     set_optimizer(optim)
         Sets the optimizer attribute.
 
-    set_optim_paras(optim_paras)
+    set_optim_paras(optim_params)
         Sets the optimizer parameters attribute.
 
-    set_optimizer_object(optim=None, optim_paras=None)
+    set_optimizer_object(optim=None, optim_params=None)
         Sets the optimizer object with the specified parameters.
 
     set_seed(seed)
@@ -619,12 +619,12 @@ class BaseMhaElm(BaseElm):
     SUPPORTED_REG_OBJECTIVES = get_all_regression_metrics()
 
     def __init__(self, layer_sizes=(10, ), act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_paras=None, seed=None, verbose=True):
+                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=True):
         super().__init__(layer_sizes=layer_sizes, act_name=act_name)
         self.obj_name = obj_name
-        if optim_paras is None:
-            optim_paras = {"epoch": 500, "pop_size": 20}
-        self.optim_paras = optim_paras
+        if optim_params is None:
+            optim_params = {"epoch": 500, "pop_size": 20}
+        self.optim_params = optim_params
         self.optim = optim
         self.verbose = verbose
         self.seed = seed
@@ -632,7 +632,7 @@ class BaseMhaElm(BaseElm):
 
     def get_name(self):
         if type(self.optim) is str:
-            return f"{self.optim_paras}-ELM"
+            return f"{self.optim_params}-ELM"
         return f"{self.optimizer.name}-ELM"
 
     def set_params(self, **params):
@@ -640,7 +640,7 @@ class BaseMhaElm(BaseElm):
         optimizer_params = {k.split('__')[1]: v for k, v in params.items() if k.startswith('optim_paras__')}
 
         if optimizer_params:
-            self.optim_paras.update(optimizer_params)
+            self.optim_params.update(optimizer_params)
 
         # Pass non-optimizer parameters to the parent class set_params
         super_params = {k: v for k, v in params.items() if not k.startswith('optim_paras__')}
@@ -651,10 +651,10 @@ class BaseMhaElm(BaseElm):
     def set_optimizer(self, optim):
         self.optimizer = optim
 
-    def set_optim_paras(self, optim_paras):
-        self.optim_paras = optim_paras
+    def set_optim_paras(self, optim_params):
+        self.optim_params = optim_params
 
-    def set_optimizer_object(self, optim=None, optim_paras=None):
+    def set_optimizer_object(self, optim=None, optim_params=None):
         """
         Parameters
         ----------
@@ -662,21 +662,21 @@ class BaseMhaElm(BaseElm):
             The optim can be a string indicating the name of the optimizer supported by the Mealpy library
             or an instance of the Optimizer class.
 
-        optim_paras : dict, optional
+        optim_params : dict, optional
             A dictionary containing the hyper-parameters for the optimizer. This is only used if the optim
             parameter is provided either as a string or an Optimizer instance that supports parameter configuration.
         """
         if type(optim) is str:
             opt_class = get_optimizer_by_class(optim)
-            if type(optim_paras) is dict:
-                self.optim_paras = optim_paras
-                self.optimizer = opt_class(**optim_paras)
+            if type(optim_params) is dict:
+                self.optim_params = optim_params
+                self.optimizer = opt_class(**optim_params)
             else:
-                raise TypeError(f"optim_paras is a dictionary contains the hyper-parameter of optimizer in Mealpy library.")
+                raise TypeError(f"optim_params is a dictionary contains the hyper-parameter of optimizer in Mealpy library.")
         elif isinstance(optim, Optimizer):
-            if type(optim_paras) is dict:
-                self.optim_paras = optim_paras
-                optim.set_parameters(optim_paras)
+            if type(optim_params) is dict:
+                self.optim_params = optim_params
+                optim.set_parameters(optim_params)
             self.optimizer = optim
         else:
             raise TypeError(f"optimizer needs to set as a string and supported by Mealpy library.")
@@ -763,7 +763,7 @@ class BaseMhaElm(BaseElm):
             "save_population": save_population,
             "obj_weights": self.obj_weights
         }
-        self.set_optimizer_object(self.optim, self.optim_paras)
+        self.set_optimizer_object(self.optim, self.optim_params)
         g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=self.seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.decode(self.solution, self.X_temp, self.y_temp)
