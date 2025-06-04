@@ -14,41 +14,45 @@ from intelelm.utils.encoder import ObjectiveScaler
 
 class MhaElmRegressor(BaseMhaElm, RegressorMixin):
     """
-    class MhaElmRegressor(BaseMhaElm, RegressorMixin)
+    MhaElmRegressor Class
+    =====================
+    A regression model based on the `BaseMhaElm` class, designed for optimization-based training
+    using various optimizers and regression metrics. It supports flexible network creation and
+    evaluation using the Permetrics library.
 
-    def __init__(self, layer_sizes, act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False, obj_weights=None):
+    Attributes
+    ----------
+    obj_weights : list, tuple, or np.ndarray, optional
+        Weights for multiple objectives in multi-output regression.
 
-        Parameters
-        ----------
-        layer_sizes : list
-            List containing the sizes of each layer in the network.
+    Methods
+    -------
+    __init__(layer_sizes=(10,), act_name="elu", obj_name="MSE", optim="BaseGA", optim_params=None, seed=None,
+             verbose=False, obj_weights=None, lb=None, ub=None, mode='single', n_workers=None, termination=None)
+        Initializes the `MhaElmRegressor` with specified parameters.
 
-        act_name : str, default="elu"
-            The activation function to be used in the network.
+    create_network(X, y)
+        Creates and initializes the regression network based on the input data and target values.
 
-        obj_name : str, optional
-            The name of the objective function to be optimized.
+    objective_function(solution=None)
+        Evaluates the fitness function for regression metrics based on the provided solution.
 
-        optim : str, default="BaseGA"
-            The optimization method to be used.
+    score(X, y, method="RMSE")
+        Returns the selected regression metric for the given test data and labels.
 
-        optim_params : dict, optional
-            Parameters for the optimization method.
+    scores(X, y, list_methods=("MSE", "MAE"))
+        Returns a dictionary of multiple regression metrics for the given test data and labels.
 
-        seed : int, optional
-            Random seed for reproducibility.
-
-        verbose : bool, default=False
-            Whether to print verbose output.
-
-        obj_weights : list or tuple or np.ndarray, optional
-            Weights for the objective function.
+    evaluate(y_true, y_pred, list_metrics=("MSE", "MAE"))
+        Evaluates the performance of predictions using a list of regression metrics.
     """
-    def __init__(self, layer_sizes=(10, ), act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False, obj_weights=None):
+
+    def __init__(self, layer_sizes=(10, ), act_name="elu", obj_name="MSE",
+                 optim="BaseGA", optim_params=None, seed=None, verbose=False, obj_weights=None,
+                 lb=None, ub=None, mode='single', n_workers=None, termination=None):
         super().__init__(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
-                         optim=optim, optim_params=optim_params, seed=seed, verbose=verbose)
+                         optim=optim, optim_params=optim_params, seed=seed, verbose=verbose,
+                         lb=lb, ub=ub, mode=mode, n_workers=n_workers, termination=termination)
         self.obj_weights = obj_weights
 
     def create_network(self, X, y) -> MultiLayerELM:
@@ -99,7 +103,7 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
         network.input_size = X.shape[1]
         return network
 
-    def fitness_function(self, solution=None):
+    def objective_function(self, solution=None):
         """
         Evaluates the fitness function for regression metric
 
@@ -185,42 +189,53 @@ class MhaElmRegressor(BaseMhaElm, RegressorMixin):
 
 class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
     """
-    Defines the general class of Metaheuristic-based ELM model for Classification problems that inherit the BaseMhaElm and ClassifierMixin classes.
+    MhaElmClassifier Class
+    =======================
+    A classification model based on the `BaseMhaElm` class, designed for optimization-based training
+    using various optimizers and classification metrics. It supports flexible network creation and
+    evaluation using the Permetrics library.
 
     Attributes
     ----------
     CLS_OBJ_LOSSES : list
-        List of supported classification objective losses.
+        List of classification objective losses supported by the model.
+
+    return_prob : bool
+        Indicates whether the model should return probabilities for multi-class classification.
 
     Methods
     -------
-    __init__(self, layer_sizes=None, act_name="elu", obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False)
-        Initializes the MhaElmClassifier with the given parameters.
+    __init__(layer_sizes=(10,), act_name="elu", obj_name="F1S", optim="BaseGA", optim_params=None, seed=None,
+             verbose=False, lb=None, ub=None, mode='single', n_workers=None, termination=None)
+        Initializes the `MhaElmClassifier` with specified parameters.
 
-    _check_y(self, y)
-        Checks the output labels (y) to ensure they are in the correct format and dimensionality.
+    _check_y(y)
+        Validates the target labels and determines the number of unique labels.
 
-    create_network(self, X, y) -> MultiLayerELM:
-        Sets up the MultiLayerELM network for classification based on input data (X) and labels (y).
+    create_network(X, y)
+        Creates and initializes the classification network based on the input data and target labels.
 
-    fitness_function(self, solution=None)
-        Evaluates the fitness function for the classification metric.
+    objective_function(solution=None)
+        Evaluates the fitness function for classification metrics based on the provided solution.
 
-    score(self, X, y, method="AS")
-        Returns the metric on the given test data and labels.
+    score(X, y, method="AS")
+        Returns the selected classification metric for the given test data and labels.
 
-    scores(self, X, y, list_methods=("AS", "RS"))
-        Returns the list of metrics on the given test data and labels.
+    scores(X, y, list_methods=("AS", "RS"))
+        Returns a dictionary of multiple classification metrics for the given test data and labels.
 
-    evaluate(self, y_true, y_pred, list_metrics=("AS", "RS"))
-        Returns the list of performance metrics on the given test data and labels.
+    evaluate(y_true, y_pred, list_metrics=("AS", "RS"))
+        Evaluates the performance of predictions using a list of classification metrics.
     """
+
     CLS_OBJ_LOSSES = ["CEL", "HL", "KLDL", "BSL"]
 
-    def __init__(self, layer_sizes=(10, ), act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=False):
+    def __init__(self, layer_sizes=(10, ), act_name="elu", obj_name="F1S",
+                 optim="BaseGA", optim_params=None, seed=None, verbose=False,
+                 lb=None, ub=None, mode='single', n_workers=None, termination=None):
         super().__init__(layer_sizes=layer_sizes, act_name=act_name, obj_name=obj_name,
-                         optim=optim, optim_params=optim_params, seed=seed, verbose=verbose)
+                         optim=optim, optim_params=optim_params, seed=seed, verbose=verbose,
+                         lb=lb, ub=ub, mode=mode, n_workers=n_workers, termination=termination)
         self.return_prob = False
 
     def _check_y(self, y):
@@ -262,7 +277,7 @@ class MhaElmClassifier(BaseMhaElm, ClassifierMixin):
         network.input_size = X.shape[1]
         return network
 
-    def fitness_function(self, solution=None):
+    def objective_function(self, solution=None):
         """
         Evaluates the fitness function for classification metric
 
