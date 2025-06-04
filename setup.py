@@ -4,18 +4,31 @@
 #       Github: https://github.com/thieu1995        %
 # --------------------------------------------------%
 
-from setuptools import setup, find_packages
+import setuptools
+import os
+import re
 
+
+with open("requirements.txt") as f:
+    REQUIREMENTS = f.read().splitlines()
+
+def get_version():
+    init_path = os.path.join(os.path.dirname(__file__), 'intelelm', '__init__.py')
+    with open(init_path, 'r', encoding='utf-8') as f:
+        init_content = f.read()
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]+)['\"]", init_content, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 def readme():
     with open('README.md', encoding='utf-8') as f:
-        README = f.read()
-    return README
+        res = f.read()
+    return res
 
-
-setup(
+setuptools.setup(
     name="intelelm",
-    version="1.2.0",
+    version=get_version(),
     author="Thieu",
     author_email="nguyenthieu2102@gmail.com",
     description="IntelELM: A Python Framework for Intelligent Metaheuristic-based Extreme Learning Machine",
@@ -40,7 +53,7 @@ setup(
         'Change Log': 'https://github.com/thieu1995/intelelm/blob/master/ChangeLog.md',
         'Forum': 'https://t.me/+fRVCJGuGJg1mNDg1',
     },
-    packages=find_packages(exclude=['tests*', 'examples*']),
+    packages=setuptools.find_packages(exclude=['tests*', 'examples*']),
     include_package_data=True,
     license="GPLv3",
     classifiers=[
@@ -56,6 +69,8 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: System :: Benchmark",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Mathematics",
@@ -68,10 +83,9 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Utilities",
     ],
-    install_requires=["numpy>=1.17.1", "scipy>=1.7.1", "scikit-learn>=1.2.1",
-                      "pandas>=1.3.5", "mealpy>=3.0.1", "permetrics>=2.0.0"],
+    install_requires=REQUIREMENTS,
     extras_require={
-        "dev": ["pytest>=7.0", "pytest-cov==4.0.0", "flake8>=4.0.1"],
+        "dev": ["pytest==7.1.2", "pytest-cov==4.0.0", "flake8>=4.0.1"],
     },
     python_requires='>=3.8',
 )
