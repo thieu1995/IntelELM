@@ -15,7 +15,7 @@ def test_MhaElmRegressor_class():
 
     opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
     model = MhaElmRegressor(layer_sizes=(10, ), act_name="elu", obj_name="RMSE", optim="BaseGA",
-                            optim_paras=opt_paras, verbose=False, seed=42)
+                            optim_params=opt_paras, verbose=False, seed=42)
     model.fit(X, y)
 
     pred = model.predict(X)
