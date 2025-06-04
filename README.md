@@ -18,24 +18,28 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
-IntelELM (Intelligent Metaheuristic-based Extreme Learning Machine) is a Python library that implements a framework 
-for training Extreme Learning Machine (ELM) networks using Metaheuristic Algorithms. It provides a comparable 
-alternative to the traditional ELM network and is compatible with the Scikit-Learn library. With IntelELM, you can 
-perform searches and hyperparameter tuning using the functionalities provided by the Scikit-Learn library.
+**IntelELM** is an open-source Python library providing a framework for training Extreme Learning Machines (ELM) using 
+Metaheuristic Algorithms. It is compatible with Scikit-Learn, enabling easy integration into existing machine learning
+pipelines such as hyperparameter tuning, feature selection,...
+
+
+---
+
+## 🚀 Features
 
 * **Free software:** GNU General Public License (GPL) V3 license
-* **Provided Estimator**: ElmRegressor, ElmClassifier, MhaElmRegressor, MhaElmClassifier, AutomatedMhaElmTuner, AutomatedMhaElmComparator
+* **Provided Estimator**: `ElmRegressor`, `ElmClassifier`, `MhaElmRegressor`, `MhaElmClassifier`, `AutomatedMhaElmTuner`, `AutomatedMhaElmComparator`
 * **Total Optimization-based ELM Regression**: > 200 Models 
 * **Total Optimization-based ELM Classification**: > 200 Models
 * **Supported datasets**: 54 (47 classifications and 7 regressions)
 * **Supported performance metrics**: >= 67 (47 regressions and 20 classifications)
 * **Supported objective functions (as fitness functions or loss functions)**: >= 67 (47 regressions and 20 classifications)
-* **Documentation:** https://intelelm.readthedocs.io/en/latest/
+* **Documentation:** https://intelelm.readthedocs.io/
 * **Python versions:** >= 3.8.x
 * **Dependencies:** numpy, scipy, scikit-learn, pandas, mealpy, permetrics
 
 
-# Citation Request 
+## 📄 Citation Request
 
 If you want to understand how Metaheuristic is applied to Extreme Learning Machine, you need to read the paper 
 titled "A new workload prediction model using extreme learning machine and enhanced tug of war optimization". 
@@ -77,28 +81,33 @@ Please include these citations if you plan to use this library:
 }
 ```
 
+## 📦 Installation
+
 # Installation
 
-* Install the [current PyPI release](https://pypi.python.org/pypi/intelelm):
-```sh 
+Install the latest version from PyPI:
+
+```bash
 $ pip install intelelm
 ```
 
-After installation, you can check the version of current installed IntelELM by:
+Check installed version:
 
-```sh
+```bash
 $ python
 >>> import intelelm
 >>> intelelm.__version__
 ```
 
-### Tutorials
+## 📚 Documentation & Tutorials
 
-* Tutorials can be found inside [tutorials](./tutorials) directory.
-  * [Building a handwritten digits classifier using IntelELM](./tutorials/example_hand_written_digits.ipynb)
-  * [Building a house price predictor using IntelELM](./tutorials/example_california_housing.ipynb)
+- **Documentation:** [https://intelelm.readthedocs.io/en/latest/](https://intelelm.readthedocs.io/en/latest/)
+- **Tutorials:**
+  - [Handwritten Digits Classification](./tutorials/example_hand_written_digits.ipynb)
+  - [California Housing Price Regression](./tutorials/example_california_housing.ipynb)
 
-### Examples
+
+## 🧪 Example Usage
 
 * In this section, we will explore the usage of the IntelELM model with the assistance of a dataset. While all the 
 preprocessing steps mentioned below can be replicated using Scikit-Learn, we have implemented some utility functions 
@@ -137,7 +146,8 @@ print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_REG_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 regressor = MhaElmRegressor(layer_sizes=(10, ), act_name="elu", obj_name="RMSE", 
-                            optim="BaseGA", optim_params=opt_paras, seed=42)
+                            optim="BaseGA", optim_params=opt_paras, seed=42,
+                            lb=None, ub=None, mode='single', n_workers=None, termination=None)
 regressor.fit(data.X_train, data.y_train)
 
 ##### 5.4: Use Metaheuristic-based ELM model for classification problem
@@ -145,7 +155,8 @@ print(MhaElmClassifier.SUPPORTED_OPTIMIZERS)
 print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 classifier = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="KLDL", 
-                              optim="BaseGA", optim_params=opt_paras, seed=42)
+                              optim="BaseGA", optim_params=opt_paras, seed=42,
+                              lb=None, ub=None, mode='single', n_workers=None, termination=None)
 classifier.fit(data.X_train, data.y_train)
 
 #### Step 6: Predicting a new result
@@ -173,8 +184,13 @@ A real-world dataset contains features that vary in magnitudes, units, and range
 normalization when the scale of a feature is irrelevant or misleading. Feature Scaling basically helps to normalize 
 the data within a particular range.
 
+---
 
-1) Where do I find the supported metrics like above ["AS", "PS", "RS"]. What is that?
+## ❓ FAQ
+
+### 1. How to list supported objective metrics?
+
+Where do I find the supported metrics like above ["AS", "PS", "RS"]. What is that?
 You can find it here: https://github.com/thieu1995/permetrics or use this
 
 ```python
@@ -184,7 +200,8 @@ print(MhaElmRegressor.SUPPORTED_REG_OBJECTIVES)
 print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 ```
 
-2) I got this type of error
+### 2. ValueError: Existed at least one new label in y_pred?
+I got this type of error
 ```python
 raise ValueError("Existed at least one new label in y_pred.")
 ValueError: Existed at least one new label in y_pred.
@@ -198,7 +215,9 @@ How to solve this?
   encounter this error. You cannot predict or assign new data to a new label because you have no knowledge about the 
   new label. There are several solutions to this problem.
 
-+ 1st: Use the SMOTE method to address imbalanced data and ensure that all classes have the same number of samples.
+- **1st: Use SMOTE to rebalance the dataset:**
+- 
+Use the SMOTE method to address imbalanced data and ensure that all classes have the same number of samples.
 
 ```python
 import pandas as pd
@@ -212,7 +231,9 @@ X_new, y_new = SMOTE().fit_resample(X, y)
 data = Data(X_new, y_new)
 ```
 
-+ 2nd: Use different random_state numbers in split_train_test() function.
+- **2st: Try changing `random_state` in split_train_test:**
+
+- Use different random_state numbers in split_train_test() function.
 
 ```python
 import pandas as pd
@@ -224,8 +245,11 @@ data = Data(X, y)
 data.split_train_test(test_size=0.2, random_state=10)  # Try different random_state value 
 ```
 
-3) **When testing several algorithms based on Extreme Learning Machines (ELM), they all produce the same results. 
-   Even during the training process, the global best solution remains unchanged.**
+### 3. Why don't MHA-based ELM models improve results?
+
+When testing several algorithms based on Extreme Learning Machines (ELM), they all produce the same results. 
+   Even during the training process, the global best solution remains unchanged.
+
 + This issue was identified in version <= v1.0.2 when the default values for the lower bound (lb) and upper bound 
   (ub) were set in the narrow range of (-1, 1). This limited range proved to be too small, causing all algorithms to 
   converge to local optima. Fortunately, this problem has been addressed in versions > v1.0.3, where the default 
@@ -246,38 +270,34 @@ from intelelm import MhaElmClassifier
 
 opt_paras = {"name": "GA", "epoch": 30, "pop_size": 30}
 model = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="KLDL", 
-                         optim="BaseGA", optim_params=opt_paras, verbose=True, seed=42)
-model.fit(X_train, y_train, lb=(-10., ), ub=(10., ))
+                         optim="BaseGA", optim_params=opt_paras, verbose=True, seed=42,
+                         lb=-10., ub=10., mode='single', n_workers=None, termination=None)
+model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 ```
 
-# Support (questions, problems)
+## 🔗 Useful Links
 
-### Official Links 
+- 📦 [Source Code](https://github.com/thieu1995/intelelm)
+- 📖 [Documentation](https://intelelm.readthedocs.io/)
+- ⬇️ [PyPI Releases](https://pypi.org/project/intelelm/)
+- ❗ [Report Issues](https://github.com/thieu1995/intelelm/issues)
+- 📝 [Changelog](https://github.com/thieu1995/MetaPerceptron/blob/master/ChangeLog.md)
+- 💬 [Chat Group](https://t.me/+fRVCJGuGJg1mNDg1)
 
-* Official source code repo: https://github.com/thieu1995/intelelm
-* Official document: https://intelelm.readthedocs.io/
-* Download releases: https://pypi.org/project/intelelm/
-* Issue tracker: https://github.com/thieu1995/intelelm/issues
-* Notable changes log: https://github.com/thieu1995/intelelm/blob/master/ChangeLog.md
-* Official chat group: https://t.me/+fRVCJGuGJg1mNDg1
 
-* This project also related to our another projects which are "optimization" and "machine learning", check it here:
-    * https://github.com/thieu1995/mealpy
-    * https://github.com/thieu1995/metaheuristics
-    * https://github.com/thieu1995/opfunu
-    * https://github.com/thieu1995/enoppy
-    * https://github.com/thieu1995/permetrics
-    * https://github.com/thieu1995/MetaCluster
-    * https://github.com/thieu1995/pfevaluator
-    * https://github.com/aiir-team
+## 🤝 Related Projects
 
-### Related Documents
+- [MEALPY](https://github.com/thieu1995/mealpy)
+- [Metaheuristics](https://github.com/thieu1995/metaheuristics)
+- [Opfunu](https://github.com/thieu1995/opfunu)
+- [Enoppy](https://github.com/thieu1995/enoppy)
+- [Permetrics](https://github.com/thieu1995/permetrics)
+- [MetaCluster](https://github.com/thieu1995/MetaCluster)
+- [Pfevaluator](https://github.com/thieu1995/pfevaluator)
+- [AIIR Team](https://github.com/aiir-team)
 
-1. https://analyticsindiamag.com/a-beginners-guide-to-extreme-learning-machine/
-2. https://medium.datadriveninvestor.com/extreme-learning-machine-for-simple-classification-e776ad797a3c
-3. https://www.extreme-learning-machines.org/
-4. https://web.njit.edu/~usman/courses/cs675_fall20/ELM-NC-2006.pdf
-5. https://m-clark.github.io/models-by-example/elm.html
-6. https://github.com/ivallesp/simplestELM
-7. https://www.javatpoint.com/elm-in-machine-learning
+
+---
+
+Developed by: [Thieu](mailto:nguyenthieu2102@gmail.com?Subject=IntelELM_QUESTIONS) @ 2023
