@@ -748,7 +748,8 @@ class BaseMhaElm(BaseElm):
         """
         pass
 
-    def set_lb_ub(self, lb=None, ub=None, n_dims=None):
+    @staticmethod
+    def set_lb_ub(lb=None, ub=None, n_dims=None):
         """
         Validates and sets the lower and upper bounds for optimization.
 
@@ -772,7 +773,7 @@ class BaseMhaElm(BaseElm):
             If the bounds are not valid.
         """
         if lb is None:
-            lb = (-1.,) * n_dims
+            lb = (-10.,) * n_dims
         elif isinstance(lb, numbers.Number):
             lb = (lb, ) * n_dims
         elif isinstance(lb, (list, tuple, np.ndarray)):
@@ -782,7 +783,7 @@ class BaseMhaElm(BaseElm):
                 lb = np.array(lb, dtype=float).ravel()
 
         if ub is None:
-            ub = (1.,) * n_dims
+            ub = (10.,) * n_dims
         elif isinstance(ub, numbers.Number):
             ub = (ub, ) * n_dims
         elif isinstance(ub, (list, tuple, np.ndarray)):
@@ -795,18 +796,6 @@ class BaseMhaElm(BaseElm):
             raise ValueError(f"Invalid lb and ub. Their length should be equal to 1 or {n_dims}.")
 
         return np.array(lb).ravel(), np.array(ub).ravel()
-
-    def _get_minmax(self, obj_name=None):
-        if obj_name is None:
-            raise ValueError("obj_name can't be None")
-        else:
-            if obj_name in self.SUPPORTED_REG_OBJECTIVES.keys():
-                minmax = self.SUPPORTED_REG_OBJECTIVES[obj_name]
-            elif obj_name in self.SUPPORTED_CLS_OBJECTIVES.keys():
-                minmax = self.SUPPORTED_CLS_OBJECTIVES[obj_name]
-            else:
-                raise ValueError("obj_name is not supported. Please check the library: permetrics to see the supported objective function.")
-        return minmax
 
     def fit(self, X, y):
         """
@@ -839,7 +828,7 @@ class BaseMhaElm(BaseElm):
             "log_to": log_to,
             "obj_weights": self.obj_weights
         }
-        self.set_optimizer_object(self.optim, self.optim_params)
+        self.optimizer = self.set_optimizer_object(self.optim, self.optim_params)
         g_best = self.optimizer.solve(problem, mode=self.mode, n_workers=self.n_workers, termination=self.termination, seed=self.seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.decode(self.solution, self.X_temp, self.y_temp)
