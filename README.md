@@ -11,7 +11,7 @@
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/intelelm.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/intelelm.svg)
 [![Downloads](https://static.pepy.tech/badge/intelelm)](https://pepy.tech/project/intelelm)
-[![Tests & Publishes to PyPI](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml/badge.svg)](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yaml)
+[![Tests & Publishes to PyPI](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yml/badge.svg)](https://github.com/thieu1995/intelelm/actions/workflows/publish-package.yml)
 [![Documentation Status](https://readthedocs.org/projects/intelelm/badge/?version=latest)](https://intelelm.readthedocs.io/en/latest/?badge=latest)
 [![Chat](https://img.shields.io/badge/Chat-on%20Telegram-blue)](https://t.me/+fRVCJGuGJg1mNDg1)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8249045.svg)](https://doi.org/10.5281/zenodo.8249045)
