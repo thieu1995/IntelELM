@@ -96,7 +96,7 @@ jobs:
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
-          attestations: true
+          attestations: false
 
       - name: Clean existing attestations
         run: rm -f dist/*.intoto.jsonl
