@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Optional
 from sklearn.base import BaseEstimator
 from permetrics import RegressionMetric, ClassificationMetric
-from mealpy import get_optimizer_by_name, Optimizer, get_all_optimizers, FloatVar
+from mealpy import get_optimizer_by_class, Optimizer, get_all_optimizers, FloatVar
 from intelelm.utils import activation, validator
 from intelelm.utils.evaluator import get_all_regression_metrics, get_all_classification_metrics
 
@@ -614,7 +614,7 @@ class BaseMhaElm(BaseElm):
     fit(X, y, lb=(-10.0, ), ub=(10.0, ), mode="single", n_workers=None, termination=None, save_population=False)
         Fits the model to the provided data using the specified optimization parameters.
     """
-    SUPPORTED_OPTIMIZERS = list(get_all_optimizers().keys())
+    SUPPORTED_OPTIMIZERS = list(get_all_optimizers(verbose=False).keys())
     SUPPORTED_CLS_OBJECTIVES = get_all_classification_metrics()
     SUPPORTED_REG_OBJECTIVES = get_all_regression_metrics()
 
@@ -667,7 +667,7 @@ class BaseMhaElm(BaseElm):
             parameter is provided either as a string or an Optimizer instance that supports parameter configuration.
         """
         if type(optim) is str:
-            opt_class = get_optimizer_by_name(optim)
+            opt_class = get_optimizer_by_class(optim)
             if type(optim_paras) is dict:
                 self.optim_paras = optim_paras
                 self.optimizer = opt_class(**optim_paras)
