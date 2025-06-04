@@ -14,7 +14,8 @@ def test_MhaElmClassifier_class():
 
     opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
     model = MhaElmClassifier(layer_sizes=(10, ), act_name="elu", obj_name="AS", optim="BaseGA",
-                             optim_params=opt_paras, verbose=False, seed=42)
+                             optim_params=opt_paras, verbose=False, seed=42,
+                             lb=None, ub=None, mode='single', n_workers=None, termination=None)
     model.fit(X, y)
     pred = model.predict(X)
     assert MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES == model.SUPPORTED_CLS_OBJECTIVES
