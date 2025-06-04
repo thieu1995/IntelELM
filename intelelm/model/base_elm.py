@@ -561,9 +561,9 @@ class BaseMhaElm(BaseElm):
     """
     BaseMhaElm Class
     ================
-    The `BaseMhaElm` class is an optimization-based extension of the `BaseElm` class, designed for
-    flexible optimization and parameter tuning of networks utilizing various optimizers from the
-    Mealpy library. It supports different activation functions, objectives, and optimization strategies.
+    An optimization-based extension of the `BaseElm` class, designed for flexible optimization and parameter tuning
+    of networks utilizing various optimizers from the Mealpy library. It supports different activation functions,
+    objectives, and optimization strategies.
 
     Attributes
     ----------
@@ -576,9 +576,40 @@ class BaseMhaElm(BaseElm):
     SUPPORTED_REG_OBJECTIVES : dict
         Dictionary of supported regression objectives.
 
+    obj_name : str
+        Name of the objective function used for optimization.
+
+    optim : str or Optimizer
+        Name or instance of the optimizer used for optimization.
+
+    optim_params : dict
+        Parameters for configuring the optimizer.
+
+    verbose : bool
+        Whether to display optimization logs.
+
+    seed : int
+        Seed for random number generation.
+
+    lb : list, tuple, np.ndarray, int, or float
+        Lower bounds for optimization variables.
+
+    ub : list, tuple, np.ndarray, int, or float
+        Upper bounds for optimization variables.
+
+    mode : str
+        Optimization mode, e.g., 'single' or 'multi'.
+
+    n_workers : int
+        Number of workers for parallel optimization.
+
+    termination : object
+        Termination criteria for the optimization process.
+
     Methods
     -------
-    __init__(layer_sizes=None, act_name="elu", obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=True)
+    __init__(layer_sizes=(10,), act_name="elu", obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=True,
+             lb=None, ub=None, mode='single', n_workers=None, termination=None)
         Initializes the `BaseMhaElm` with specified parameters.
 
     get_name()
@@ -599,14 +630,11 @@ class BaseMhaElm(BaseElm):
     set_seed(seed)
         Sets the random seed for the class.
 
-    _get_history_loss(optimizer=None)
-        Retrieves the historical loss values from the optimizer.
-
-    fitness_function(solution=None)
+    objective_function(solution=None)
         Placeholder fitness function to be overridden by the subclass or user.
 
-    _get_lb_ub(lb=None, ub=None, problem_size=None)
-        Computes the lower and upper bounds based on the provided inputs and problem size.
+    set_lb_ub(lb=None, ub=None, n_dims=None)
+        Validates and sets the lower and upper bounds for optimization.
 
     _get_minmax(obj_name=None)
         Retrieves the minmax value for the specified objective name.
@@ -614,6 +642,7 @@ class BaseMhaElm(BaseElm):
     fit(X, y)
         Fits the model to the provided data using the specified optimization parameters.
     """
+
     SUPPORTED_OPTIMIZERS = list(get_all_optimizers(verbose=False).keys())
     SUPPORTED_CLS_OBJECTIVES = get_all_classification_metrics()
     SUPPORTED_REG_OBJECTIVES = get_all_regression_metrics()
