@@ -65,6 +65,7 @@ knn_model.fit(X_train_scaled, y_train_encoded)
 evaluate_model(knn_model, X_test_scaled, y_test_encoded, "KNN")
 
 elm_model = MhaElmClassifier(layer_sizes=(10,), act_name="elu", obj_name="BSL", optim="BaseGA",
-                             optim_params=OPTIMIZATION_PARAMETERS, verbose=False, seed=42)
+                             optim_params=OPTIMIZATION_PARAMETERS, verbose=False, seed=42,
+                             lb=None, ub=None, mode='single', n_workers=None, termination=None)
 elm_model.fit(X_train_scaled, y_train_encoded)
 evaluate_model(elm_model, X_test_scaled, y_test_encoded, "MhaElmClassifier")

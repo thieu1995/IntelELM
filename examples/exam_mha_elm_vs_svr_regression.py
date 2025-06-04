@@ -38,7 +38,8 @@ def train_and_evaluate_mha_elm(X_train, y_train, X_test, y_test):
     data = Data().set_train_test(X_train, y_train, X_test, y_test)
     opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
     model = MhaElmRegressor(layer_sizes=(10,), act_name="elu", obj_name="MSE", optim="BaseGA",
-                            optim_params=opt_paras, verbose=False, seed=42)
+                            optim_params=opt_paras, verbose=False, seed=42,
+                            lb=None, ub=None, mode='single', n_workers=None, termination=None)
     model.fit(data.X_train, data.y_train)
     pred = model.predict(data.X_test)
 

@@ -25,7 +25,9 @@ data.y_train, data.y_test, scaler_y = scale_data(data.y_train, np.reshape(data.y
 
 # Define model parameters and initialize the model
 opt_paras = {"name": "GA", "epoch": 100, "pop_size": 30}
-model = MhaElmRegressor(layer_sizes=(10,), act_name="elu", obj_name="MSE", optim="BaseGA", optim_params=opt_paras, seed=42)
+model = MhaElmRegressor(layer_sizes=(10,), act_name="elu", obj_name="MSE",
+                        optim="BaseGA", optim_params=opt_paras, seed=42,
+                        lb=None, ub=None, mode='single', n_workers=None, termination=None)
 
 # Train the model
 model.fit(data.X_train, data.y_train)

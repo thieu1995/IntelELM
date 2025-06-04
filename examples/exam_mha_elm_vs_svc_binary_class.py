@@ -56,7 +56,8 @@ mhaelm_model = MhaElmClassifier(
     optim=MHAELM_OPTIM,
     optim_params=GA_PARAMS,
     verbose=False,
-    seed=SEED
+    seed=SEED,
+    lb=None, ub=None, mode='single', n_workers=None, termination=None
 )
 evaluate_model(mhaelm_model, X_train, y_train, X_test, y_test, SVM_METRICS)
 print("Try my AS metric with score function")

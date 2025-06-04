@@ -3,6 +3,7 @@
 #       Email: nguyenthieu2102@gmail.com            %                                                    
 #       Github: https://github.com/thieu1995        %                         
 # --------------------------------------------------%
+
 import pandas as pd
 import numpy as np
 from sklearn.datasets import load_breast_cancer
@@ -38,7 +39,8 @@ def train_model(X_train, y_train):
 	"""Trains the MhaElmClassifier model."""
 	print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 	model = MhaElmClassifier(layer_sizes=LAYER_SIZES, act_name=ACTIVATION_FUNCTION, obj_name=OBJECTIVE_NAME,
-							 optim=OPTIMIZER, optim_params=OPT_PARAMS, verbose=VERBOSE, seed=SEED)
+							 optim=OPTIMIZER, optim_params=OPT_PARAMS, verbose=VERBOSE, seed=SEED,
+							 lb=None, ub=None, mode='single', n_workers=None, termination=None)
 	model.fit(X_train, y_train)
 	return model
 

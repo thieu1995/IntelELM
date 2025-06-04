@@ -25,7 +25,7 @@ def build_and_evaluate_model(data, obj_name, evaluation_methods):
                              optim=OPTIMIZER,
                              optim_params=OPT_PARAMS,
                              verbose=VERBOSE,
-                             seed=SEED)
+                             seed=SEED, lb=None, ub=None, mode='single', n_workers=None, termination=None)
     model.fit(data.X_train, data.y_train)
     predictions = model.predict(data.X_test)
     print(model.evaluate(data.y_test, predictions, list_metrics=evaluation_methods))
