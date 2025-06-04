@@ -31,12 +31,21 @@ class Data:
 
     def __init__(self, X=None, y=None, name="Unknown"):
         self.X = X
-        self.y = y
+        self.y = self.check_y(y)
         self.name = name
         self.X_train, self.y_train, self.X_test, self.y_test = None, None, None, None
 
     @staticmethod
-    def scale(X, scaling_methods=('standard', ), list_dict_paras=None):
+    def check_y(y):
+        if y is None:
+            return y
+        y = np.squeeze(np.asarray(y))
+        if y.ndim == 1:
+            y = np.reshape(y, (-1, 1))
+        return y
+
+    @staticmethod
+    def scale(X, scaling_methods=('standard',), list_dict_paras=None):
         X = np.squeeze(np.asarray(X))
         if X.ndim == 1:
             X = np.reshape(X, (-1, 1))
@@ -61,7 +70,9 @@ class Data:
         The wrapper of the split_train_test function in scikit-learn library.
         """
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=test_size,
-                        train_size=train_size, random_state=random_state, shuffle=shuffle, stratify=stratify)
+                                                                                train_size=train_size,
+                                                                                random_state=random_state,
+                                                                                shuffle=shuffle, stratify=stratify)
         if not inplace:
             return self.X_train, self.X_test, self.y_train, self.y_test
 
