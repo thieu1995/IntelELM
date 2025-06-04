@@ -1,3 +1,3 @@
-include README.md LICENSE CODE_OF_CONDUCT.md ChangeLog.md examples.md
+include README.md LICENSE CODE_OF_CONDUCT.md ChangeLog.md examples.md CITATION.cff
 include intelelm/data/reg/*.csv
 include intelelm/data/cls/*.csv
