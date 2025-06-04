@@ -3,7 +3,7 @@
 #       Email: nguyenthieu2102@gmail.com            %                                                    
 #       Github: https://github.com/thieu1995        %                         
 # --------------------------------------------------%
-
+import numbers
 import pickle
 import numpy as np
 import pandas as pd
@@ -611,7 +611,7 @@ class BaseMhaElm(BaseElm):
     _get_minmax(obj_name=None)
         Retrieves the minmax value for the specified objective name.
 
-    fit(X, y, lb=(-10.0, ), ub=(10.0, ), mode="single", n_workers=None, termination=None, save_population=False)
+    fit(X, y)
         Fits the model to the provided data using the specified optimization parameters.
     """
     SUPPORTED_OPTIMIZERS = list(get_all_optimizers(verbose=False).keys())
@@ -619,15 +619,19 @@ class BaseMhaElm(BaseElm):
     SUPPORTED_REG_OBJECTIVES = get_all_regression_metrics()
 
     def __init__(self, layer_sizes=(10, ), act_name="elu",
-                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=True):
+                 obj_name=None, optim="BaseGA", optim_params=None, seed=None, verbose=True,
+                 lb=None, ub=None, mode='single', n_workers=None, termination=None):
         super().__init__(layer_sizes=layer_sizes, act_name=act_name)
         self.obj_name = obj_name
-        if optim_params is None:
-            optim_params = {"epoch": 500, "pop_size": 20}
-        self.optim_params = optim_params
         self.optim = optim
+        self.optim_params = optim_params
         self.verbose = verbose
         self.seed = seed
+        self.lb = lb
+        self.ub = ub
+        self.mode = mode
+        self.n_workers = n_workers
+        self.termination = termination
         self.network, self.obj_weights = None, None
 
     def get_name(self):
@@ -656,28 +660,37 @@ class BaseMhaElm(BaseElm):
 
     def set_optimizer_object(self, optim=None, optim_params=None):
         """
+        Validates the real optimizer based on the provided `optim` and `optim_pras`.
+
         Parameters
         ----------
         optim : str or Optimizer
-            The optim can be a string indicating the name of the optimizer supported by the Mealpy library
-            or an instance of the Optimizer class.
-
+            The optimizer name or instance to be set.
         optim_params : dict, optional
-            A dictionary containing the hyper-parameters for the optimizer. This is only used if the optim
-            parameter is provided either as a string or an Optimizer instance that supports parameter configuration.
+            Parameters to configure the optimizer.
+
+        Returns
+        -------
+        Optimizer
+            An instance of the selected optimizer.
+
+        Raises
+        ------
+        TypeError
+            If the provided optimizer is neither a string nor an instance of Optimizer.
         """
-        if type(optim) is str:
+        if isinstance(optim, str):
             opt_class = get_optimizer_by_class(optim)
-            if type(optim_params) is dict:
-                self.optim_params = optim_params
-                self.optimizer = opt_class(**optim_params)
+            if isinstance(optim_params, dict):
+                return opt_class(**optim_params)
             else:
-                raise TypeError(f"optim_params is a dictionary contains the hyper-parameter of optimizer in Mealpy library.")
+                return opt_class(epoch=300, pop_size=30)
         elif isinstance(optim, Optimizer):
-            if type(optim_params) is dict:
-                self.optim_params = optim_params
+            if isinstance(optim_params, dict):
+                if "name" in optim_params:  # Check if key exists and remove it
+                    optim.name = optim_params.pop("name")
                 optim.set_parameters(optim_params)
-            self.optimizer = optim
+            return optim
         else:
             raise TypeError(f"optimizer needs to set as a string and supported by Mealpy library.")
 
@@ -690,32 +703,69 @@ class BaseMhaElm(BaseElm):
         """
         self.seed = seed
 
-    def _get_history_loss(self, optimizer=None):
-        list_global_best = optimizer.history.list_global_best
-        # 2D array / matrix 2D
-        global_obj_list = np.array([agent.target.objectives for agent in list_global_best])
-        # Make each obj_list as an element in array for drawing
-        return global_obj_list[:, 0]
+    def objective_function(self, solution=None):
+        """
+        Evaluates the fitness function for classification metrics based on the provided solution.
 
-    def fitness_function(self, solution=None):
+        Parameters
+        ----------
+        solution : np.ndarray, default=None
+            The proposed solution to evaluate.
+
+        Returns
+        -------
+        result : float
+            The fitness value, representing the loss for the current solution.
+        """
         pass
 
-    def _get_lb_ub(self, lb=None, ub=None, problem_size=None):
-        if type(lb) in (list, tuple, np.ndarray) and type(ub) in (list, tuple, np.ndarray):
-            if len(lb) == len(ub):
-                if len(lb) == 1:
-                    lb = np.array(lb * problem_size, dtype=float)
-                    ub = np.array(ub * problem_size, dtype=float)
-                elif len(lb) != problem_size:
-                    raise ValueError(f"Invalid lb and ub. Their length should be equal to 1 or problem_size.")
+    def set_lb_ub(self, lb=None, ub=None, n_dims=None):
+        """
+        Validates and sets the lower and upper bounds for optimization.
+
+        Parameters
+        ----------
+        lb : list, tuple, np.ndarray, int, or float, optional
+            The lower bounds for weights and biases in network.
+        ub : list, tuple, np.ndarray, int, or float, optional
+            The upper bounds for weights and biases in network.
+        n_dims : int
+            The number of dimensions.
+
+        Returns
+        -------
+        tuple
+            A tuple containing validated lower and upper bounds.
+
+        Raises
+        ------
+        ValueError
+            If the bounds are not valid.
+        """
+        if lb is None:
+            lb = (-1.,) * n_dims
+        elif isinstance(lb, numbers.Number):
+            lb = (lb, ) * n_dims
+        elif isinstance(lb, (list, tuple, np.ndarray)):
+            if len(lb) == 1:
+                lb = np.array(lb * n_dims, dtype=float)
             else:
-                raise ValueError(f"Invalid lb and ub. They should have the same length.")
-        elif type(lb) in (int, float) and type(ub) in (int, float):
-            lb = (float(lb), ) * problem_size
-            ub = (float(ub), ) * problem_size
-        else:
-            raise ValueError(f"Invalid lb and ub. They should be a number of list/tuple/np.ndarray with size equal to problem_size")
-        return lb, ub
+                lb = np.array(lb, dtype=float).ravel()
+
+        if ub is None:
+            ub = (1.,) * n_dims
+        elif isinstance(ub, numbers.Number):
+            ub = (ub, ) * n_dims
+        elif isinstance(ub, (list, tuple, np.ndarray)):
+            if len(ub) == 1:
+                ub = np.array(ub * n_dims, dtype=float)
+            else:
+                ub = np.array(ub, dtype=float).ravel()
+
+        if len(lb) != len(ub):
+            raise ValueError(f"Invalid lb and ub. Their length should be equal to 1 or {n_dims}.")
+
+        return np.array(lb).ravel(), np.array(ub).ravel()
 
     def _get_minmax(self, obj_name=None):
         if obj_name is None:
@@ -729,43 +779,40 @@ class BaseMhaElm(BaseElm):
                 raise ValueError("obj_name is not supported. Please check the library: permetrics to see the supported objective function.")
         return minmax
 
-    def fit(self, X, y, lb=(-10.0, ), ub=(10.0, ), mode="single", n_workers=None, termination=None, save_population=False):
+    def fit(self, X, y):
         """
         Parameters
         ----------
         X : The features data, np.ndarray
         y : The ground truth data
-        lb : The lower bound for decision variables in optimization problem (The weights and biases of network)
-        ub : The upper bound for decision variables in optimization problem (The weights and biases of network)
-        mode: Parallel: 'process', 'thread'; Sequential: 'swarm', 'single'.
-
-                * 'process': The parallel mode with multiple cores run the tasks
-                * 'thread': The parallel mode with multiple threads run the tasks
-                * 'swarm': The sequential mode that no effect on updating phase of other agents
-                * 'single': The sequential mode that effect on updating phase of other agents, this is default mode
-
-        n_workers: The number of workers (cores or threads) to do the tasks (effect only on parallel mode)
-        termination: The termination dictionary or an instance of Termination class in Mealpy library
-        save_population : Save the population of search agents (Don't set it to True when you don't know how to use it)
         """
         self.network = self.create_network(X, y)
         y_scaled = self.network.obj_scaler.transform(y)
         self.X_temp, self.y_temp = X, y_scaled
+
         problem_size = self.network.get_ndim()
-        lb, ub = self._get_lb_ub(lb, ub, problem_size)
-        minmax = self._get_minmax(self.obj_name)
+        lb, ub = self.set_lb_ub(self.lb, self.ub, problem_size)
+
         log_to = "console" if self.verbose else "None"
+        if self.obj_name is None:
+            raise ValueError("obj_name can't be None")
+        else:
+            if self.obj_name in self.SUPPORTED_REG_OBJECTIVES.keys():
+                minmax = self.SUPPORTED_REG_OBJECTIVES[self.obj_name]
+            elif self.obj_name in self.SUPPORTED_CLS_OBJECTIVES.keys():
+                minmax = self.SUPPORTED_CLS_OBJECTIVES[self.obj_name]
+            else:
+                raise ValueError("obj_name is not supported. Please check the library: permetrics to see the supported objective function.")
         problem = {
-            "obj_func": self.fitness_function,
+            "obj_func": self.objective_function,
             "bounds": FloatVar(lb=lb, ub=ub),
             "minmax": minmax,
             "log_to": log_to,
-            "save_population": save_population,
             "obj_weights": self.obj_weights
         }
         self.set_optimizer_object(self.optim, self.optim_params)
-        g_best = self.optimizer.solve(problem, mode=mode, n_workers=n_workers, termination=termination, seed=self.seed)
+        g_best = self.optimizer.solve(problem, mode=self.mode, n_workers=self.n_workers, termination=self.termination, seed=self.seed)
         self.solution, self.best_fit = g_best.solution, g_best.target.fitness
         self.network.decode(self.solution, self.X_temp, self.y_temp)
-        self.loss_train = self._get_history_loss(optimizer=self.optimizer)
+        self.loss_train = np.array(self.optimizer.history.list_global_best_fit)
         return self
