@@ -38,7 +38,7 @@ def train_model(X_train, y_train):
 	"""Trains the MhaElmClassifier model."""
 	print(MhaElmClassifier.SUPPORTED_CLS_OBJECTIVES)
 	model = MhaElmClassifier(layer_sizes=LAYER_SIZES, act_name=ACTIVATION_FUNCTION, obj_name=OBJECTIVE_NAME,
-							 optim=OPTIMIZER, optim_paras=OPT_PARAMS, verbose=VERBOSE, seed=SEED)
+							 optim=OPTIMIZER, optim_params=OPT_PARAMS, verbose=VERBOSE, seed=SEED)
 	model.fit(X_train, y_train)
 	return model
 
@@ -57,7 +57,7 @@ def perform_grid_search(X_train, y_train, X_test, y_test):
 		'act_name': ["relu", "prelu", "gelu", "elu", "selu", "rrelu", "tanh", "hard_tanh", "sigmoid", "hard_sigmoid",
 					 "swish", "hard_swish", "soft_plus", "mish", "soft_sign", "tanh_shrink", "soft_shrink", "hard_shrink"],
 		'obj_name': ['BSL', "HS"],
-		'optim_paras': [
+		'optim_params': [
 			{"name": "GA", "epoch": 10, "pop_size": 30},
 			{"name": "GA", "epoch": 20, "pop_size": 30},
 			{"name": "GA", "epoch": 30, "pop_size": 30},

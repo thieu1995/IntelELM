@@ -22,7 +22,7 @@ data.split_train_test(test_size=0.2, random_state=2)
 
 opt_paras = {"name": "GA", "epoch": 10, "pop_size": 30}
 model = MhaElmClassifier(layer_sizes=10, act_name="elu", obj_name="KLDL", optim="BaseGA",
-                         optim_paras=opt_paras, verbose=True, seed=42)
+                         optim_params=opt_paras, verbose=True, seed=42)
 model.fit(data.X_train, data.y_train)
 y_pred = model.predict(data.X_test)
 

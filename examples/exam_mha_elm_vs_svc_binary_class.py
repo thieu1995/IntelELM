@@ -54,7 +54,7 @@ mhaelm_model = MhaElmClassifier(
     act_name=MHAELM_ACT_NAME,
     obj_name=MHAELM_OBJ_NAME,
     optim=MHAELM_OPTIM,
-    optim_paras=GA_PARAMS,
+    optim_params=GA_PARAMS,
     verbose=False,
     seed=SEED
 )

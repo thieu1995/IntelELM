@@ -23,7 +23,7 @@ def build_and_evaluate_model(data, obj_name, evaluation_methods):
                              act_name=ACTIVATION,
                              obj_name=obj_name,
                              optim=OPTIMIZER,
-                             optim_paras=OPT_PARAMS,
+                             optim_params=OPT_PARAMS,
                              verbose=VERBOSE,
                              seed=SEED)
     model.fit(data.X_train, data.y_train)
