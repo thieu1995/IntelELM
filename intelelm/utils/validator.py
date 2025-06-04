@@ -6,6 +6,12 @@
 
 import operator
 import numpy as np
+from numbers import Number
+
+
+SEQUENCE = (list, tuple, np.ndarray)
+DIGIT = (int, np.integer)
+REAL = (float, np.floating)
 
 
 def is_in_bound(value, bound):
@@ -54,7 +60,7 @@ def is_str_in_list(value: str, my_list: list):
     return False
 
 
-def check_int(name: str, value: int, bound=None):
+def check_int(name: str, value: None, bound=None):
     """
     Checks if a value is an integer and optionally verifies it falls within a specified bound.
 
@@ -69,7 +75,7 @@ def check_int(name: str, value: int, bound=None):
     Raises:
         ValueError: If the value is not an integer or falls outside the bound (if provided).
     """
-    if type(value) in [int, float]:
+    if isinstance(value, Number):
         if bound is None:
             return int(value)
         elif is_in_bound(value, bound):
@@ -78,7 +84,7 @@ def check_int(name: str, value: int, bound=None):
     raise ValueError(f"'{name}' is an integer {bound}.")
 
 
-def check_float(name: str, value: int, bound=None):
+def check_float(name: str, value: None, bound=None):
     """
     Checks if a value is a float and optionally verifies it falls within a specified bound.
 
@@ -93,7 +99,7 @@ def check_float(name: str, value: int, bound=None):
     Raises:
         ValueError: If the value is not a float or falls outside the bound (if provided).
     """
-    if type(value) in [int, float]:
+    if isinstance(value, Number):
         if bound is None:
             return float(value)
         elif is_in_bound(value, bound):
@@ -146,7 +152,7 @@ def check_bool(name: str, value: bool, bound=(True, False)):
     raise ValueError(f"'{name}' is a boolean {bound}.")
 
 
-def check_tuple_int(name: str, values: tuple, bounds=None):
+def check_tuple_int(name: str, values: None, bounds=None):
     """
     Checks if a tuple contains only integers and optionally verifies they fall within specified bounds.
 
@@ -161,8 +167,8 @@ def check_tuple_int(name: str, values: tuple, bounds=None):
     Raises:
         ValueError: If the values are not all integers or do not fall within the specified bounds.
     """
-    if type(values) in [tuple, list] and len(values) > 1:
-        value_flag = [type(item) == int for item in values]
+    if isinstance(values, SEQUENCE) and len(values) > 1:
+        value_flag = [isinstance(item, DIGIT) for item in values]
         if np.all(value_flag):
             if bounds is not None and len(bounds) == len(values):
                 value_flag = [is_in_bound(item, bound) for item, bound in zip(values, bounds)]
@@ -189,8 +195,8 @@ def check_tuple_float(name: str, values: tuple, bounds=None):
     Raises:
         ValueError: If the values are not all floats or integers or do not fall within the specified bounds.
     """
-    if type(values) in [tuple, list] and len(values) > 1:
-        value_flag = [type(item) in [int, float] for item in values]
+    if isinstance(values, SEQUENCE) and len(values) > 1:
+        value_flag = [isinstance(item, Number) for item in values]
         if np.all(value_flag):
             if bounds is not None and len(bounds) == len(values):
                 value_flag = [is_in_bound(item, bound) for item, bound in zip(values, bounds)]
